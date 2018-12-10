@@ -1,0 +1,17 @@
+{
+  "name": "technologies-that-dont-need-to-support",
+  "version": "1.0.0",
+  "description": "2018-12-12 bitvalley-inside lightning talk",
+  "author": "tkdn <tkdnation@gmail.com>",
+  "scripts": {
+    "start": "mdx-deck deck.mdx",
+    "build": "mdx-deck build deck.mdx",
+    "pdf": "mdx-deck pdf deck.mdx",
+    "image": "mdx-deck screenshot deck.mdx",
+    "help": "mdx-deck"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "mdx-deck": "^1.8.2"
+  }
+}
