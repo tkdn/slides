@@ -1,4 +1,5 @@
-import { Head } from 'mdx-deck'
+import { Head, Appear } from 'mdx-deck'
+import { Invert } from 'mdx-deck/layouts'
 export { default as theme } from '../../theme'
 
 <Head>
@@ -8,7 +9,7 @@ export { default as theme } from '../../theme'
 # フロントエンド<br />全身ちぎれ節
 支えなくて良い技術を支える技術
 
-<small>2018-12-11 BIT VALLEY -INSIDE- Vol.4</small>
+<small>2018-12-12 BIT VALLEY -INSIDE- Vol.4</small>
 
 ---
 
@@ -26,18 +27,255 @@ export { default as theme } from '../../theme'
 
 ## 本日話すこと
 1. 「支えなくて良い技術」とは
-2. 支えなくて良い技術を支えていく
-- how 1: webpack + Babel
-- how 2: 不足しているネイティブ API
-- how 3: OS固有バグとの付き合い方
+2. 支えなくて良い技術を支えていく技術
+- :wrench: how 1: webpack + Babel
+- :wrench: how 2: 不足しているネイティブ API
+- :wrench: how 3: OS固有バグとの付き合い方
 3. まとめ・言いたいこと
 
 ---
 
-## 話さないこと
-- 具体的なコードサンプルを使ったブラウザでの動作デモ
+## 1. 「支えなくて良い技術」とは
+`deprecated`, `obsoleted` な技術
+
+<br /><br />
+
+例えば
 
 ---
 
-## 1. 「支えなくて良い技術」とは
-- `deprecated`, `obsoleted` な技術
+## `TLS 1.0/1.1` のサポート停止
+
+<img src="https://i.gyazo.com/b4f666b50cd2970c2b3a1ddd7a05ea38.png" width="720" />
+
+---
+
+## これによって対応出来なくなる<br />ブラウザ OS ・ブラウザ
+
+<img src="https://i.gyazo.com/19a2d9c257a2fe6221aaa2df5666d385.png" width="960" />
+
+Android 2.x - 4.x
+
+```notes
+ところが弊社
+```
+
+---
+
+## 弊社
+
+大人の事情でまだまだ支えている
+
+---
+
+## 対応は辛い
+
+- :bug: 端末やOS由来によるバグチケット
+- :construction: かさむ工数
+- :scream: たまっていくカルマ
+- :arrow_down: 開発体験 DX の悪化
+
+---
+
+## このカルマを燃やすために<br />エンジニアリングでなんとかする
+
+---
+
+## ゴール
+- レガシー端末をフォローしていくことに疲れない
+- 開発者が（ある程度）意識せずコーディング・オペレーションできる
+- 自動化できることは自動化し開発体験を良くしたい
+
+---
+
+## how 1: webpack + Babel
+- webpack <br /> => モジュール解決のためのバンドラー
+- Babel <br /> => ES2015~ の構文を解釈し ES5 相当に変換
+- babel-preset-env <br /> => browserslist が提供する DSL に従い、サポートブラウザを記述する
+
+---
+
+```js
+{
+  "browserslist": [
+    // Android 2.1 以上に最適化
+    "Android >= 2.1",
+    // iOS 8 以上に最適化
+    "iOS >= 8",
+  ]
+}
+```
+
+ターゲットブラウザに準じた変換が可能
+
+---
+
+```js
+export　default class Human {
+  constructor(name) {
+    this.name = name || "Tom";
+  }
+  eat(food) {
+    console.log(`${this.name} eats ${food}`);
+  }
+}
+```
+こんなのが
+
+---
+
+```js
+exports.__esModule = true;
+var Human = (function() {
+  function Human(name) {
+    _classCallCheck(this, Human);
+
+    this.name = name || "Tom";
+  }
+  Human.prototype.eat = function eat(food) {
+    console.log(String(this.name) + " eats " + String(food));
+  };
+  return Human;
+})();
+exports.default = Human;
+```
+
+---
+
+export default Invert
+
+だがしかし。
+
+このままでは Android 2 系, 4.0 系までフォローできない
+
+<Appear>
+ES5 相当の JavaScript ネイティブ API が不足している
+</Appear>
+
+---
+
+export default Invert
+
+# やってやろうじゃねえか
+
+---
+
+## how 2: 足りないネイティブ API を足す
+- ES5 相当のネイティブ API を埋める es5-shim <br />を依存として追加しファイルにバンドルさせる
+- [es-shims/es5-shim: ECMAScript 5 compatibility shims for legacy (and modern) JavaScript engines](https://github.com/es-shims/es5-shim)
+
+---
+
+```
+これでもう大丈夫やろ…(；´∀｀)
+```
+
+---
+
+# 「一部の Android 2 系では <br /> ES3 相当の記述をしないと対応出来ない」
+
+---
+
+```
+まじかよ…(；´∀｀)
+```
+
+---
+`object` のプロパティが<br />予約語となる場合エラーとなる...`etc`
+
+```js
+// 下記の構文がエラーとなる
+var obj = { class: true };
+var obj.class = true;
+// こうしないとだめ
+var obj = { "class": true };
+var obj["class"] = true;
+```
+
+---
+
+## ES3 相当に書き換える必要がある
+- [Branches · sophiebits/es3ify](https://github.com/sophiebits/es3ify/branches)
+- 最終的な生成ファイルをリビルドするスクリプトを書いた
+
+---
+
+```
+ファイルサイズ膨れ上がってきたんだが…(；´∀｀)
+ここまでやったんならさすがにもう大丈夫やろ…(；´∀｀)
+```
+
+---
+
+# OS 固有のバグ
+
+---
+
+## OS 固有のバグ
+- `Uncaught TypeError: Cannot assign to read only property '__esModule' of #<Object>`
+- `なにこれ…(；´∀｀)`
+- 任意の構文からJavaScript オブジェクトへ直接的なプロパティ書き込みが出来ないというエラー内容
+
+---
+
+## 出処
+- Android 4.0.x に搭載された JavaScript エンジン V8 のバグ起因
+- V8 のバージョンまで特定は出来ないが、Android 4.0.3, 4.0.4 の標準ブラウザもしくは webview の V8 JavaScript エンジンではバグを持ったまま実装されている。なお 2.x 系ではバグは起きない
+- [1530 - Defining function's 'prototype' property with Object.defineProperty sets different value and makes property immutable - v8 - Monorail](https://bugs.chromium.org/p/v8/issues/detail?id=1530)
+
+---
+
+## どうしたもんか :weary:
+
+---
+
+<img src="https://i.gyazo.com/18d177700c25e822aa93858e94e64b62.png" width="860" />
+
+回避パッチで何とかなりそう
+
+---
+
+```js
+// Android 4.x support
+var defineProperty = Object.defineProperty;
+Object.defineProperty = function (exports, name) {
+  if (name === '__esModule') {
+    exports[name] = true;
+    return;
+  }
+  return defineProperty.apply(this, arguments);
+};
+```
+
+- パッチを差し込むプラグインを作った
+- 無事に動いた…
+
+---
+
+- 紹介しきれませんがでも他にも OS 固有のバグが多くあります…
+- OS 固有バグは網羅すること自体が人智を越えているため、トライ&エラーとナレッジの共有しかない
+
+---
+
+## まとめ
+- ターゲットブラウザを明示し設定、意識せずコーディング
+- 不足した API は適宜 polyfill, shim を足し込んでフォロー
+- OS 固有のバグは知見でしかない、ぶつからないと分からない
+
+
+**全身ちぎれて血まみれになりながらまとめた**
+
+---
+
+## 考えていくべきこと
+- 紹介したことはいずれ価値のなくなるハック
+- ユーザがセキュアな環境で通信出来ない事自体をきちんと考える
+- レガシー対応に引きずられてサービスグロースの足を引っ張らないと良い
+
+---
+
+## ~~支えなくて良い技術を支える~~
+
+<br /><br />
+
+## 少なくともユーザがいる限りは<br />フロントエンドの技術で支えきる
