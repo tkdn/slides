@@ -13,7 +13,7 @@ export { default as theme } from '../../theme'
 
 ---
 
-<img src="https://avatars3.githubusercontent.com/u/797187?s=460&v=4" width="96" align="left" />
+<img src="assets/tkdn.jpg" width="96" align="left" />
 
 ## Satoshi Takeda
 
@@ -46,13 +46,13 @@ export { default as theme } from '../../theme'
 
 ## `TLS 1.0/1.1` のサポート停止
 
-<img src="https://i.gyazo.com/b4f666b50cd2970c2b3a1ddd7a05ea38.png" width="720" />
+<img src="assets/tls-stop.png" width="720" />
 
 ---
 
 ## これによって対応出来なくなる<br />ブラウザ OS ・ブラウザ
 
-<img src="https://i.gyazo.com/19a2d9c257a2fe6221aaa2df5666d385.png" width="960" />
+<img src="assets/browser-wikipedia.png" width="960" />
 
 Android 2.x - 4.x
 
@@ -142,14 +142,14 @@ exports.default = Human;
 
 ---
 
-export default Invert
-
 だがしかし。
 
-このままでは Android 2 系, 4.0 系までフォローできない
+このままでは<br />Android 2 系, 4.0 系までフォローできない
 
 <Appear>
-ES5 相当の JavaScript ネイティブ API が不足している
+<p style={{fontSize: "2em"}}>
+ES5 相当の <br />JavaScript ネイティブ API <br />が不足している
+</p>
 </Appear>
 
 ---
@@ -218,10 +218,15 @@ var obj["class"] = true;
 
 ---
 
+<img src="assets/v8-bug.png" width="960" />
+
+[1530 - Defining function's 'prototype' property with Object.defineProperty sets different value and makes property immutable - v8 - Monorail](https://bugs.chromium.org/p/v8/issues/detail?id=1530)
+
+---
+
 ## 出処
 - Android 4.0.x に搭載された JavaScript エンジン V8 のバグ起因
 - V8 のバージョンまで特定は出来ないが、Android 4.0.3, 4.0.4 の標準ブラウザもしくは webview の V8 JavaScript エンジンではバグを持ったまま実装されている。なお 2.x 系ではバグは起きない
-- [1530 - Defining function's 'prototype' property with Object.defineProperty sets different value and makes property immutable - v8 - Monorail](https://bugs.chromium.org/p/v8/issues/detail?id=1530)
 
 ---
 
@@ -229,7 +234,7 @@ var obj["class"] = true;
 
 ---
 
-<img src="https://i.gyazo.com/18d177700c25e822aa93858e94e64b62.png" width="860" />
+<img src="assets/patch.png" width="860" />
 
 回避パッチで何とかなりそう
 
