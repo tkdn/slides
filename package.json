@@ -8,6 +8,6 @@
   "author": "tkdn <tkdnation@gmail.com>",
   "license": "MIT",
   "workspaces": [
-    "slides/*"
+    "./*"
   ]
 }
