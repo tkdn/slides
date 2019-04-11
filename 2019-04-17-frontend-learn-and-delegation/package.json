@@ -1,0 +1,18 @@
+{
+    "name": "2019-04-17-frontend-learn-and-delegation",
+    "version": "1.0.0",
+    "description": "2019-04-17 bitvalley-inside session talk, learn-and-delegation",
+    "author": "tkdn <tkdnation@gmail.com>",
+    "scripts": {
+      "start": "mdx-deck deck.mdx",
+      "build": "mdx-deck build deck.mdx",
+      "pdf": "mdx-deck pdf deck.mdx",
+      "image": "mdx-deck screenshot deck.mdx",
+      "help": "mdx-deck"
+    },
+    "license": "MIT",
+    "devDependencies": {
+      "mdx-deck": "^1.8.2"
+    }
+  }
+  
