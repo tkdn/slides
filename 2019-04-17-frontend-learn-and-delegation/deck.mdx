@@ -1,4 +1,4 @@
-import { Head, Appear } from 'mdx-deck'
+import { Head, Appear, Image, Notes } from 'mdx-deck'
 import { Invert } from 'mdx-deck/layouts'
 export { default as theme } from '../theme'
 
@@ -12,39 +12,464 @@ export { default as theme } from '../theme'
 <small>2019-04-17 BIT VALLEY -INSIDE- Vol.8</small>
 
 ---
+![](https://s.gravatar.com/avatar/365c5067d0c90ef80e3c35d83ed811a3?s=100)
 
 # Who
-
-<img src="https://s.gravatar.com/avatar/365c5067d0c90ef80e3c35d83ed811a3?s=120" width="96" />
-
-- Sathoshi Takeda @tkdn
-- 株式会社 mediba
-- CD本部創造開発部／ものづくり推進部
-- フロントエンドエンジニア
-- **"ブラウザが主戦場"**
+```js
+  {
+    "name"  : "武田 諭",
+    "social": "@tkdn",
+    "from"  : "株式会社 mediba",
+    "dept"  : "CD本部創造開発部／ものづくり推進部",
+    "work"  : "フロントエンドエンジニア",
+    "word"  : "ブラウザが主戦場"
+  }
+```
 
 ---
 
 # Who
 - 1980年生まれ, 38歳
 - 2003〜2013 俳優業
-- 2013〜2017 エンジニアにジョブチェンジ、受託開発
+- 2013〜2017 エンジニア転向、受託開発など
 - 2017〜 mediba, 入社2年目
 
 <Appear>
-  画像
+  <img src="https://i.gyazo.com/c863b32e5145a8c061d66d72198fefcd.jpg" height="240" />
+  <img src="https://i.gyazo.com/e4aa5df7c24d5dc43bfb0560e97abe0d.png" height="240" />
+  <img src="https://i.gyazo.com/b196524a4ee8ee913b5e48d390fdf4e1.png" height="240" />
 </Appear>
 
 ---
+# 今日の話は
 
+- au Web ポータルのリニューアルにおける取り組み
+- 未学習領域におけるチーム学習
+
+<small>テクニカルなことにはほとんど触れません</small>
+
+**チームにおける学習のために<br />何をやって、何ができたか・できなかったか**
+
+---
 # アジェンダ
 au Web ポータルリニューアルに際して、
 
-1. 何を変えたか
-  - 開発チームの体制, チーム再編による技術刷新
-2. どう取り組んでいったか
-  - 学習における課題, 具体的な取り組み
-3. プロジェクトにおける失敗, 成功
+1. <b>何を変えたか</b><br /><small>開発チームの体制, チーム再編による技術刷新</small>
+2. <b>どう取り組んでいったか</b><br /><small>学習における課題, 具体的な取り組み</small>
+3. <b>チームは, わたしは何を学べたか</b>
 
 ---
+<Image src="https://i.gyazo.com/df542df59e94903dea7be84ce87d65e5.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
 
+# 何を変えたか #1<br /><small>開発チームの体制</small>
+
+</Image>
+---
+## From
+Front-End : Server-Side = 4 : 8
+
+![](https://i.gyazo.com/d5380a25f0f23ad4dda405eabe58c009.png)
+
+<Notes>お断り: 1プロジェクトを運用するのではなく、3つ+αくらいのプロジェクトを運用しているチームです</Notes>
+---
+## To
+Front-End : Back-End = 9 : 3
+
+![](https://i.gyazo.com/278aa9cb92168b4017fea7e720ea80c0.png)
+
+---
+## 比率の変更の理由
+- 事業成長に伴う施策はフロントエンドがメイン
+- 人的リソースの効率化を行うため, 比率の変更
+- 技術的な成長要素と市場価値の創出
+
+---
+## フロントエンド？
+- ブラウザ・クライアント
+- アプリケーションコード
+- BFF（API）
+- クライアントサイドのトラブルシュート
+
+までの範疇を広義のフロントエンドととした
+
+---
+<Image src="https://i.gyazo.com/df542df59e94903dea7be84ce87d65e5.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# 何を変えたか #2<br /><small>チーム体制変更による技術刷新</small>
+
+</Image>
+
+<Notes>天一</Notes>
+---
+## From
+- Server-Side: Yii Framework（PHP）
+- Front-End: jQuery, Backbone.js
+- Server: apache, and other middlewares
+- Infra: self-uncontrollable な環境
+
+---
+## チーム体制変更に見合った技術選定
+
+<img src="https://i.gyazo.com/6ae4b4e196db2b005dd06df3df6a7e33.png" width="480" />
+
+- 広義のフロントエンド領域において境界を失くす
+- 言語の違いによるコンテキストスイッチを減らす
+- 共通言語によりappコミュニケーションコストを下げる
+
+---
+## To
+- ✏️ : **`TypeScript`**
+- 🏗 : **`Next.js`**
+- ⚛️ : **`React/Redux`**, w/ reselect, redux-thunk
+- 🌐 : **`express`**
+- 🌐 : **`graphql-yoga`**, express-based
+- Infra: AWS へ移管, ECR + ECS/Fargate...
+
+<Notes>TSによるユニバーサル JavaScript 構成</Notes>
+---
+- TypeScript, 全員ほぼ未経験
+- React/Redux, 全員ほぼ未経験
+- Node.js によるフロントサーバ, 全員未経験
+- GraphQL, 何それ美味しいの
+
+<Appear>
+  <h2>どう考えても風呂敷広げすぎ問題<br />さてどうしていくか… 🤔</h2>
+</Appear>
+
+---
+<Image src="https://i.gyazo.com/6d894c1ec936162fc7734e0545510adb.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# どう取り組んでいったか #0<br /><small>チーム学習における課題を考える</small>
+
+</Image>
+
+---
+# 考える前に
+## 各スキルセット整理<br />旧フロントエンド 👩‍💻👨‍💻
+- 渉外的なやりとりにおいてバリューを発揮<br />コミュニケーションブリッジとなるシーンも多い
+- app エンジニアとしてのハードスキルが不足
+
+---
+## 各スキルセット整理<br />旧サーバサイド 👩‍💻👨‍💻
+- 経験値・ハードスキルが高い<br />サーバサイド PHP を触っていた人たち
+- クライアント・ブラウザについては弱い
+
+---
+## どのように学習していくかを考える
+バックグラウンドが違うメンバーが<br />
+ゼロベースの新しいスタックに<br />
+どう効率的に学習していくのか
+
+---
+## 初手: とにかく伝搬
+自ら吸収したものをとにかく伝搬しまくる
+
+- ドキュメントを和訳して Slack で展開<br />=>**届け、誰かに**
+- PoC を実装, コードで展開<br />=>**読んで、コードを**
+- 突然あらわれるライフサイクルメソッドおじさん<br /><small>※ React 16.3~ lifecycle method が deprecated になるタイミング</small><br />=>**ついてきてー**
+
+<Notes>しょて、とにかく伝達・伝搬・普及させることを考えた</Notes>
+---
+## 知っていることを提供できても<br />メンバーに伝播できているとは限らない
+さて二手目、どうしようか…🤔
+
+---
+<Image src="https://i.gyazo.com/6d894c1ec936162fc7734e0545510adb.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# どう取り組んでいったか #1<br /><small>がんばらない TypeScript</small>
+
+</Image>
+
+---
+## Why TypeScript ?
+- クラスベースの OOP 言語なら<br />サーバーサイドの人も入りやすいはず
+- 既存のフロントエンドはJSを触ってきている<br />（TypeScriptは JS のスーパーセットやろ ｸﾁｬｸﾁｬ
+
+---
+## 触ってみて
+- 型定義、なにそれ美味しいの？
+- 全然型通らない…なぜコンパイルできない…
+- VSCode が赤くなって何がなんだかわからない…
+
+---
+プロジェクト初期 @\__gfx__ さんに相談した
+
+<Appear>
+  <h1><img src="https://pbs.twimg.com/profile_images/963341891231100928/jcSM-RrJ_400x400.jpg" width="80" /> ＜ 型付けをがんばらない</h1>
+</Appear>
+
+---
+[がんばらないTypeScriptのはじめ方 - 角待ちは対空](https://blog.yux3.net/entry/2017/07/18/110000)
+
+- any でもいいじゃない。詰むより作る、前に進む
+- 慣れてくると良さや勘所がだんだんわかってきた
+- any で逃げたところもきっちり型付けしだした
+
+# TypeScript…これはいいものですね
+
+---
+### 静的なコンポーネントから
+- Atomic Design で構成したコンポーネント `tsx` を静的に実装
+- Props, ローカル State の型付け, interface の規約などを作り慣れていった
+
+### 序盤で TSLint ルール整備
+- pre-commit hook によりコードの一貫性は最初から保てた
+
+---
+## ある程度慣れてからの<br />メンバーの TypeScript への感想
+
+> JavaScriptというゆるふわな言語を TypeScript がガチッとフォローしてくれて良い<br />
+> Flow を書いていた時よりもガッツリと型を書いている感じがあって最高<br />
+> VSCode の補完が最高すぎて生産性が爆上がりした<br />
+> 型定義する時に逃げることがあった（any でもOKという安全性も大事）
+
+---
+<Invert>
+
+- 厳格なスタートを切らない
+- 学習序盤からゆるふわでスタートしても<br />最終的に変更・修正できる容易性の方が重要
+
+</Invert>
+
+---
+<Image src="https://i.gyazo.com/6d894c1ec936162fc7734e0545510adb.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# どう取り組んでいったか #2<br /><small>Redux とペアプロ</small>
+
+</Image>
+<Notes>Redux よく言われているが</Notes>
+
+---
+## "Redux は学習コストが高い" 知ってる
+
+<Notes>自分も理解がなかなかできず苦しかった思い出</Notes>
+---
+## 2, 3名のチーム別に伝達するフェーズ
+<img src="https://i.gyazo.com/ffc04f683afa7a2e959d364510e95f68.png" width="420" style={{float:"left", marginRight: "2em"}} />
+
+- Redux おじさんによる概念説明
+- アプリケーションをグローバルに状態管理できる Pub/Sub パターン！
+- カスタムイベントあるじゃないですか！？
+- イベント来たら反応するめっちゃ便利なオブザーバー！
+- なんかすごい便利なやつ（語彙力
+
+---
+概念的なものは伝わったという意味では<br />効果はあったのかもしれないが<br />実装レベルに落とせていない
+
+これは思ったより実装までのリーチがだいぶ長いのでは…？
+
+<Notes>初手、とにかく伝搬すると同義/メンバージョイン</Notes>
+
+<Appear>
+  <h2>React / Redux の習熟度が高いメンバーがジョイン</h2>
+</Appear>
+
+---
+## 習熟度の高いメンバーを中心にペアプロを行った
+※ 一般的なペアプロとは乖離があるかもしれません。
+
+1. 朝会で機能ベースでペアを決める
+2. ペアで時間を決めて自由にスタート
+3. VSCode LiveShare を使う
+4. ドライバー・ナビゲーターはなんとなく
+5. 3,4 時間使って集中的に
+
+<Notes>至ってシンプル/5.個人の集中力依存であるため適切な時間考慮があったかはわからない</Notes>
+---
+## 👬 広義のFEチーム内でペアプロをする利点
+- 得意なフィールドによって交代できる
+- 得意なフィールドであれば検索能力も高く<br />参考資料として Slack にURL貼り付け
+- GraphQL 側の Logicって？ Resolver って？<br />違うフィールドへの理解を深められるメリット
+- 適宜交代することで得られるスピード感もある
+
+---
+## 👄 雑談から得られる利点
+- Tech な話題が多くなり自然とそんな会話になりやすく雑談の質が上がる
+- 共通関数作りたくなる派, 時期尚早まだ共通化しない派など個人の特性がわかる
+- 考え方の違いが出てきたりなど初めて知る部分も多い
+
+---
+## ⏱ 時間的な制約の中で得られる利点
+- 機能実装の本質に効率的に近づける
+- 個人でやるとリファクタしたくなるところを、今は機能を実装しようというスタイルになる
+- 一人で出来ることは後回し、機能実装を優先できる
+- 一人だと不要な yak shaving をやってしまいがちだが抑止できる
+
+<Notes>デメリットもないわけではない</Notes>
+---
+## デメリット
+- 口頭伝承スタイルになるのでドキュメントが残らない
+- 知見がどうしてもペアを組んだエンジニア同士で留まってしまう
+- PR も合意が得ているのでレビューを通さないようなスタイルだった
+
+<Appear>
+  <h2>それら度外視しても、ペアプロいいものですね</h2>
+</Appear>
+
+---
+## ある程度慣れてからのメンバーの感想
+
+> Redux関連で詰まってることが多かったので LiveShare / ペアプロで進捗がかなり上がった<br />
+> 理解してくると便利に思えてきた<br />
+> 自分はペアプログラミングが結構効いている、質問する時間も省けたり、会話しながらだと理解力も全然違ってとにかく効率良く学べた
+
+<Notes>若干、テレビショッピング的で嘘っぽく、捏造のように聞こえそうですが/リリース後の KPT でもダントツ</Notes>
+---
+<Invert>
+
+- 自学自習には限界がある<br />対話しつつ機能を作っていくほうが<br />チームには効率的なシーンがある
+- 雑談、めっちゃ大事
+- ペアプロ、めちゃくちゃいいものですね
+
+</Invert>
+<Notes>語彙力がなくなるくらい良いものだと思っている</Notes>
+
+---
+<Image src="https://i.gyazo.com/6d894c1ec936162fc7734e0545510adb.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# どう取り組んでいったか #3<br /><small>React client tuning と信頼</small>
+
+</Image>
+<Notes>麺解説</Notes>
+
+---
+dev 環境も出来てきたしデプロイしてみたら
+
+- 👎 インタラクションがもっさりしている…
+- 👎 リニューアル前のサクサクした感じがない…
+- 👎 スクロールによるメモリ不足でブラウザタブが落ちる始末…
+
+**機能実装優先で<br />細部のパフォーマンスまで意識出来ていなかった**
+
+---
+## 計測によるもっさり検出
+
+<div style={{float:"left", marginRight: "2em"}} >
+<br /><img src="https://i.gyazo.com/03e57d76e969f187b225d596c8786c72.png" width="560" />
+<br /><img src="https://i.gyazo.com/ca071d3368ad86d2b9e94ca9b6ae95e1.png" width="560" />
+</div>
+
+- もっさりの感覚値をきちんと確認
+- Chrome DevTools Performance タブ
+- ユーザインタラクションが発生した後に出ている violation（違反）をまず拾い上げる
+- 不快感は遅延したフィードバックが主な原因(200msから違和感)
+
+---
+## いつ violation が出る？
+- ユーザイベント（`click`, `touchend`, `scroll`...）によるハンドラ実行完了まで時間がかかった
+- JavaScript 実行時に強制的に reflow が走った
+- `document.write` を使用した
+- イベントに対して非効率なハンドラのアタッチが行われた ... etc
+
+---
+## メンバーに伝搬
+- 習熟度の高いメンバーがサンプルになるようなPRを作成
+- 勘の鋭いメンバーにチューニングの肝を伝搬
+- 計測・仮説（改修実装）・検証、根気のいる作業なので単独作業とし成果をPRでレビュー
+
+<Notes>後半戦に近くなるとゼロからスタートしてお互い何が出来るメンバーかわかってくる</Notes>
+
+---
+## violation どう潰す？
+- インタラクションに紐づくイベントへアタッチされた処理から見ていくことにした
+- Performance タブで採取した情報を元手にハンドラを追っていく
+- 詳細計測はUser Timing API を使った計測（React v16から可能）
+
+![](https://pbs.twimg.com/media/Dc1yl3FX4AIAboC.jpg:small)
+
+---
+<div style={{float:"left", marginRight: "2em"}}>
+<img src="https://i.gyazo.com/eca3ee56123ac25e2c7de55d70e1c53e.png" width="480" />
+</div>
+
+- パフォーマンスを意識せず富豪実装していった結果
+- ほとんどがコンポーネントのムダなアップデート
+- 主だった要因としてはスタティックなコンポーネント実装時にすべて FC で実装していたため
+
+---
+### マズそうなコンポーネントを洗い出し
+- 適宜 `React.memo` 化、ムダなアップデート抑止
+- `shouldComponentUpdate` で適切にアップデートを抑止
+- `onClick` に arrow-function をそのまま渡していないか（ tslint-react: `jsx-no-lambda` rule）
+- shallow equal の比較よりも FC で再レンダリングした方がコストが低い場合があるので注意 ... etc
+
+---
+## 勘所を抑えたメンバーが大改善
+
+---
+<Invert>
+
+- UI コンポーネントから大量に作ったのが仇となった<br />後半でパフォーマンス等の整合性取るのはなかなか大変
+- 信頼ベースでタスクを委ねる
+
+</Invert>
+
+---
+<Image src="https://i.gyazo.com/92d5c4fc0d8af95ac78f3d9d00b6573a.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# チームは, わたしは何を学べたか<br /><small>learn and delegate</small>
+
+</Image>
+
+---
+# 個人の気づき
+- 空回りしながらの伝播ではリーチしない
+
+## 自分が独習できた環境とは何かを思い出した
+- 人は最初から自学自習できるわけではない
+- 外的要因や環境の上で学習できたに過ぎない
+
+---
+# ゼロベースからの<br />チーム{学習,プレイ}とは
+導入を容易に、障壁を軽減させる環境を<br />整備することから始まるんじゃないか説
+
+---
+### 1.最初からルール立てて<u>厳格なスタートを切らない</u>
+学習序盤からゆるふわでスタートしても<br />最終的に変更・修正できる容易性の方が重要
+
+### 2.<u>ペアプロ、めちゃくちゃいい</u>
+個人の自学自習には限界がある<br />対話しつつ機能を作っていくほうが<br />チームには効率的なシーンがある<br />雑談、めっちゃ大事
+
+### 3.後半は<u>信頼ベース</u>でタスクを委ねよ
+
+---
+# 以上
+ご清聴ありがとうございました。
+
+---
+<Invert>
+
+# 🍜
+- [天下一品 高円寺店 （てんかいっぴん） - 高円寺/ラーメン](https://tabelog.com/tokyo/A1319/A131904/13011752/)
+- [づゅる麺池田 （づゅるめんいけだ） - 目黒/つけ麺](https://tabelog.com/tokyo/A1316/A131601/13032592/)
+- [自家製麺 MENSHO TOKYO - 後楽園/つけ麺](https://tabelog.com/tokyo/A1310/A131003/13171239/)
+
+</Invert>
