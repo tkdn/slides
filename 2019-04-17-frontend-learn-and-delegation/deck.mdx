@@ -46,9 +46,9 @@ export { default as theme } from '../theme'
 - au Web ポータルのリニューアルにおける取り組み
 - 未学習領域におけるチーム学習
 
-<small>テクニカルなことにはほとんど触れません</small>
+**チームにおける学習に必要なものはなんだろう**
 
-**チームにおける学習のために<br />何をやって、何ができたか・できなかったか**
+テクニカルなことにはあまり触れません
 
 ---
 # アジェンダ
@@ -214,6 +214,8 @@ Front-End : Back-End = 9 : 3
   <h1><img src="https://pbs.twimg.com/profile_images/963341891231100928/jcSM-RrJ_400x400.jpg" width="80" /> ＜ 型付けをがんばらない</h1>
 </Appear>
 
+<Notes>TypeScript はメリットしかない</Notes>
+
 ---
 [がんばらないTypeScriptのはじめ方 - 角待ちは対空](https://blog.yux3.net/entry/2017/07/18/110000)
 
@@ -221,7 +223,9 @@ Front-End : Back-End = 9 : 3
 - 慣れてくると良さや勘所がだんだんわかってきた
 - any で逃げたところもきっちり型付けしだした
 
-# TypeScript…これはいいものですね
+<Appear>
+  <h1>TypeScript…これはいいものですね</h1>
+</Appear>
 
 ---
 ### 静的なコンポーネントから
@@ -441,7 +445,7 @@ dev 環境も出来てきたしデプロイしてみたら
 
 ---
 # 個人の気づき
-- 空回りしながらの伝播ではリーチしない
+- 伝播だけでは空回りしてリーチしない
 
 ## 自分が独習できた環境とは何かを思い出した
 - 人は最初から自学自習できるわけではない
@@ -449,7 +453,7 @@ dev 環境も出来てきたしデプロイしてみたら
 
 ---
 # ゼロベースからの<br />チーム{学習,プレイ}とは
-導入を容易に、障壁を軽減させる環境を<br />整備することから始まるんじゃないか説
+導入を容易に、障壁を軽減させる環境を<br />整備することから始めよう
 
 ---
 ### 1.最初からルール立てて<u>厳格なスタートを切らない</u>
@@ -461,8 +465,94 @@ dev 環境も出来てきたしデプロイしてみたら
 ### 3.後半は<u>信頼ベース</u>でタスクを委ねよ
 
 ---
-# 以上
-ご清聴ありがとうございました。
+<Image src="https://i.gyazo.com/df542df59e94903dea7be84ce87d65e5.jpg" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# リニューアル自身の成功・失敗<br /><small>少しだけクライアントパフォーマンスの話</small>
+
+</Image>
+
+---
+# au Web ポータルですが<br />実は現在クライアントサイドで<br />React が動いていません
+CSR はリニューアル以前の Backbone.js, jQuery で動いています
+
+---
+# 理由
+- リニューアル後の事業売上＝広告収入が減少
+- クライアントパフォーマンスの影響と思われる
+- 売上としての選択からReact による CSR から以前のスタックへ
+
+---
+# 何が問題だったか
+- React.hydrate によるイベントへのアタッチ、クライアントで必要な Fetch に時間がかかり UI が遅延
+- それらと広告 3rd party スクリプトとの共存においてどうしてもクライアントサイドのパフォーマンスを上げられなかった
+
+<Notes>チューニングしきれなかった悔しさしかない・それによってリニューアル自身が失敗だとは思っていない</Notes>
+---
+## リニューアル後のパフォーマンス値<br /><small>実は数字が良かったりする</small>
+![](https://i.gyazo.com/0b5ddc720974204747a5ae3d01d3fc72.png)
+
+<Notes></Notes>
+---
+- 👍 TTFB の向上 => CDN に Akamai を選択
+- 👍 FirstPaint FCP/FMP ともに向上 => React SSR
+- 👎 TimeToInteractive の低下 => アタッチ, Fetch による UI 遅延 e.g. タブ遷移
+
+![](https://i.gyazo.com/ac6dea16e4d4df06ff9694ede758586f.png)
+
+---
+## 身内自慢
+- [DataStudioとGASでWebPagetestの計測結果をグラフ化する | mediba Creator × Engineer Blog](https://ceblog.mediba.jp/post/154874126622/datastudio%E3%81%A8gas%E3%81%A7webpagetest%E3%81%AE%E8%A8%88%E6%B8%AC%E7%B5%90%E6%9E%9C%E3%82%92%E3%82%B0%E3%83%A9%E3%83%95%E5%8C%96%E3%81%99%E3%82%8B)
+- [gas-webpagetestでWebPagetestのパフォーマンス計測を自動化、可視化する | Web Scratch](https://efcl.info/2018/10/22/gas-webpagetest/)
+
+<Notes>弊社FE・苅部のブログ/リンク, 金森の gas-webpagetest の azu さんによる紹介記事</Notes>
+---
+## 広告表示の優先度を上げるために
+
+<small>事前知識: おおよそ 3rd party はメインスレッドの処理ブロックを引き起こす（`document.write` など）</small>
+
+- アプリケーションコードをコールバックキューに積んで遅延実行<br />=> 効果はある。UI 遅延を生む。それはそう。オススメしない
+- `<link rel="preload">` で 3rd party を投機的読み込み<br />=> 効果大。ブラウザの実行優先度を理解するのが良いかも
+
+![](https://i.gyazo.com/6518a002763ee539f3a33017aa149fe3.png)
+
+<Notes>setTimeoutやPromise/優先度の味方</Notes>
+---
+## Priority on Browser(Chrome)
+
+[AddyOsmani.com - JavaScript Loading Priorities in Chrome](https://addyosmani.com/blog/script-priorities/)
+
+![](https://i.gyazo.com/d83b46957635738c7a3ea9fc2dc5e270.png)
+
+---
+## 数値としてはどのくらい盛り返せたのか
+<small>リニューアルリリース、その後チューニング for 広告、CSR等変更してリリース
+<br />左:リニューアル前, 右:諸々変更を加えてのチューニング後リリース</small>
+
+<p></p>
+
+![](https://i.gyazo.com/8a58b72f2356df6981b349b464f610c8.png)
+
+- 初期描画, FCP/FMP いずれも向上
+- 元々 Akamai の TTFB が早かったのでさらに後続の数値が良くなる
+- UI 完了も早いので準じて広告描画との棲み分けが最適化
+- 広告売上も4月に入ってきて回復している(まだ経過観察中)
+
+---
+## 悔しい。あきらめねーぞ
+- React CSR に戻すためには
+- React Concurrent Mode = Async Rendering
+- [Scheduling in React](https://ndkt.tumblr.com/post/183333779499/scheduling-in-react)
+
+UI = メインスレッドをブロックすることなく<br />コンポーネントの描画を適宜スケジューリングできるとみんな幸せそう
+
+<Notes>メインスレッドにおける Scheduling API を標準化しようという動きもあり、Chromeチームがプロポーザル出してたりします</Notes>
+---
+
+# 以上<br /><small>ありがとうございました</small>
 
 ---
 <Invert>
