@@ -1,0 +1,312 @@
+import { Head, Appear, Image, Notes } from 'mdx-deck'
+import { Invert } from 'mdx-deck/layouts'
+export { default as theme } from '../theme'
+
+<Head>
+  <title>Next.js / TypeScript でリニューアル・運用におけるハマりどころ</title>
+</Head>
+
+# Next.js / TypeScript でリニューアル<br />運用におけるハマりどころ
+
+au Webポータルをリニューアルして得られたもの失ったもの
+
+[2019-06-26 React Tokyo Plus @mercari](https://www.meetup.com/ja-JP/ReactJS-Tokyo/events/262199021/)
+
+@tkdn
+
+---
+![](https://s.gravatar.com/avatar/365c5067d0c90ef80e3c35d83ed811a3?s=100)
+
+# Who
+```js
+  {
+    "name"  : "武田 諭",
+    "social": "tkdn",
+    "from"  : "株式会社 mediba",
+    "dept"  : "CD本部創造開発部／ものづくり推進部",
+    "job"   : "Front-End web developer",
+    "love"  : "family, alcohol, DX"
+  }
+```
+
+---
+![](https://www.mediba.jp/resource/images/header/logo.png)
+
+# 株式会社 mediba
+- KDDI グループ
+  - 受託
+  - 協業
+  - 自主運営(= au Webポータル)
+
+<Notes>
+  協業＝レベニューシェア
+  自社サービスも展開している
+</Notes>
+
+---
+# au Webポータル
+
+<img src="https://i.gyazo.com/c4d2829d3a599508877cf89670bb2e26.png" style={{height: "65vh"}} />
+<img src="https://i.gyazo.com/5fb867bdf3f00517432276897a495e95.png" style={{height: "65vh"}} />
+<img src="https://i.gyazo.com/a5378e098be49e7458ff9d688601ebbf.png" style={{height: "65vh"}} />
+
+---
+## なぜリニューアルしたのか
+- [mediba におけるフロントエンドの取り組み](https://tkdn.github.io/slides/2019-04-17-frontend-learn-and-delegation/#0)
+  - 事業成長に伴う施策はフロントエンド
+    - BFF を含むアプリエンジニアをフロントエンドの範疇とした
+  - 人的リソースの効率化を行うため, FE/BE 比率の変更
+  - 技術的な成長要素と市場価値の創出
+
+---
+# 今日お話すること
+
+Next.js/TypeScript を中心に据えた技術スタックでリニューアル,<br />
+それらを経て得たものを中心にお話します。
+
+<small>TypeScript みが少ないかもしれません</small><br />
+<small>包括的な内容が多いので気になるところは懇親会で聞いてください</small>
+
+---
+# アジェンダ
+
+1. <b>リニューアルで得た成功</b>  
+あるパフォーマンス値の上昇  
+ABテスト, コンポーネント設計の例
+2. <b>Next.js, next.config.js</b>  
+TypeScript との食い合わせ  
+next.config.js がきつい
+3. <b>リニューアルで得た失敗</b>  
+Perf 知見の不足による失敗  
+どうやっていくか
+
+---
+<Image src="https://i.gyazo.com/bda91ce4236b8d6fa5284cf72ca97179.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# 1. リニューアルで得た成功<br /><small>パフォーマンス値の向上</small>
+
+</Image>
+---
+## :chart_with_upwards_trend: 成功1: 数年継続して取得していた<br />（特定の）パフォーマンス値の向上
+
+<img src="https://i.gyazo.com/dcb2b7faf54eb992d53e5a98d0a9986f.png" style={{ height: "55vh"}} />
+
+TTFB / FirstPaint 上昇
+
+<Notes>
+  2年前より社内の perf 啓蒙活動により webpagetest で 12 times/1 day で計測
+  TTFB = サーバからのレスポンス1バイトを受け取ったタイミング
+  FirstPaint = 描画が始まるタイミング
+</Notes>
+
+---
+## :chart_with_upwards_trend: どうやって計測してる？
+- [DataStudioとGASでWebPagetestの計測結果をグラフ化する](https://ceblog.mediba.jp/post/154874126622/datastudio%E3%81%A8gas%E3%81%A7webpagetest%E3%81%AE%E8%A8%88%E6%B8%AC%E7%B5%90%E6%9E%9C%E3%82%92%E3%82%B0%E3%83%A9%E3%83%95%E5%8C%96%E3%81%99%E3%82%8B)
+- [gas-webpagetestでWebPagetestのパフォーマンス計測を自動化、可視化する | Web Scratch](https://efcl.info/2018/10/22/gas-webpagetest/)
+  - [uknmr/gas-webpagetest](https://github.com/uknmr/gas-webpagetest)
+
+<small>※ 今後は DataDog の custom metrics でプロット・ビジュアライズ一括にしちゃおうと思ってる</small>
+
+<Notes>
+  gas-webpagetest については clasp(gas 用インテグレーションツール), TypeScript ベース
+
+  3年くらい前から社内の perf 啓蒙活動により webpagetest で 12 times/1 day で計測
+  TTFB = サーバからのレスポンス1バイトを受け取ったタイミング
+  FirstPaint = 描画が始まるタイミング
+</Notes>
+
+
+---
+## なぜ TTFB が向上した？
+![](https://i.gyazo.com/cfab8d17967115995a4f9604d62c3e68.png)
+
+Akamai CDN
+
+- フロントサーバの画面キャッシュに利用
+- GraphQL API のレスポンスもキャッシュ
+- 日本のエッジサーバ数が多い
+- すでに実績あり、導入が容易
+- コストも見積もりやすい
+
+<Notes>
+  ## なぜ Fastly, CloudFront じゃない？
+  ### SLA 99.xxx% という基準値
+  - 満たせる CDN が Akamai だけだった
+
+  Android 4.x.x
+  iOS legacy
+  Android 2.x.x
+  AFP
+  その他の OS, ブラウザ => PC
+  緊急時は災害情報の掲示やキャリア向け災害用伝言板リンクの掲載
+  東京有事の際の大阪リージョンの緊急時画面
+  いろいろなフォールバックが多い
+</Notes>
+
+---
+## なぜ FMP が向上した？
+<img src="https://i.gyazo.com/c274a8d66ed621b7c1e41b38ff876c95.png" style={{height:"150px"}} />
+<img src="https://i.gyazo.com/6ab21f9b1be3bca1bcb6674647d8ebe6.png" style={{height:"150px"}} />
+
+- リニューアル前 CSR で埋めていた UI を SSR 化
+  - frontend friendly な BFF の存在
+  - サーバフェッチで埋められる容易性
+- Akamai 画面キャッシュも合わせて画面提供の速度が UP :zap:
+
+<Notes>
+  BFF に汚れ役をかってもらっている部分も大きい
+  ガタンッというレイアウトジャンクが解消
+</Notes>
+
+---
+<Image src="https://i.gyazo.com/bda91ce4236b8d6fa5284cf72ca97179.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# 1. リニューアルで得た成功<br /><small>事業グロースに合わせて<br />変更容易性をもったコードベース</small>
+
+</Image>
+
+<Notes>
+  - ここでの事業グロースはユーザー接地点での変更
+  - 変更容易性
+    - AB テストによる KPI へ向けた優位性の高い施策のスムーズなリリース
+</Notes>
+---
+## 変更容易性をもったコードベース？
+- AB テストによる仮設検証、コンポーネントの変更容易性が重要
+- AB テスト用の機構とリリースサイクルを早める工夫が必須
+- 条件: Google Analytics を使用した<br />URL のクエリストリング付与によるリダイレクト
+
+<Notes>
+  （Optimize によるABテストをやっているプロジェクトもあります）
+  （もちろん SSR で完結するイメージ）
+</Notes>
+
+---
+## どうする :triumph:
+- redux state で状態注入する?
+- local state で振る舞い変える?
+
+<b>Context API により上位で A/B を判定<br />
+=> 下位でいつでも利用可能になる</b>
+
+<b>宣言的に, 分岐なしで書きたい</b>
+
+<Notes>
+リリース時に単純な削除で済む
+HTML friendly なのでスキル差を考えず使える
+</Notes>
+---
+## こんなイメージ
+![](https://i.gyazo.com/8b273a60db7b6fcfd0f77882ef31e871.png)
+
+---
+## Context Provider
+
+<img src="https://i.gyazo.com/28b371518ba59067f76d7246360107b1.png" style={{height:"55vh"}} />
+
+- 初期値を引数に Context を作成, Provider を作って下層に渡す
+- Next.js pages の getInitialProps で `res.query` を渡すイメージ
+
+<Notes>
+これによって下層コンポーネントのどこでも現 location のクエリストリング文字列値を参照できる
+</Notes>
+
+---
+## Next.js pages で使ってみるとこんな感じ
+
+<img src="https://i.gyazo.com/e628cc98fe4c65b963c4341ddd998ce1.png" style={{height:"55vh"}} />
+
+<Notes>
+コンシューマーは直下に Variant のみを許可して、Variant の Props によって Child コンポーネントを出し分ける
+ここにロジックを凝縮させることで開発者は分岐などを考えなくて済みます
+</Notes>
+
+---
+## Context Consumer
+<img src="https://i.gyazo.com/dec789eaaab3d9b67e71156907123216.png" style={{height:"80vh"}} />
+
+---
+## 再掲
+![](https://i.gyazo.com/8b273a60db7b6fcfd0f77882ef31e871.png)
+
+---
+## リニューアルによって
+- :+1: ABテストはじめコードの変更容易性を担保
+- :+1: TTFB, FP/FMP **"一部の"** パフォーマンスの向上
+
+<Notes>
+  施策をとにかく繰り返しリリースサイクルを早めることを意識しています
+  ここで一部と強調した理由は追って話します
+</Notes>
+---
+<Image src="https://i.gyazo.com/cfc0a0765e54e07161f274f5446ee006.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# 2. Next.js, next.config.js<br /><small>TypeScript との食い合わせ</small>
+
+</Image>
+
+---
+## 本題入る前に
+- Next.js Production で使ってる人？ :raising_hand:
+
+<Appear>
+<img src="https://i.gyazo.com/236c0f86bd69f30f23fa29a0556c3dd3.png" />
+<p>ググらビリティがとっても低い Next.js</p>
+<p>リポジトリにサンプルが多いので始めやすい Next.js</p>
+</Appear>
+
+---
+## Next.js の TypeScript との食い合わせってどうなの？
+- 2018 初頭プラグインで `ts-loader`, `tsc` によるコンパイル
+- 2018.3 プラグインで `@babel/preset-typescript` Babel によるコンパイル
+  - [Compile TypeScript with Babel by herrstucki · Pull Request #162 · zeit/next-plugins](https://github.com/zeit/next-plugins/pull/162)
+
+---
+## 最近の Canary ブランチ
+
+<img src="https://i.gyazo.com/ed7d1ad93a8076f13398927f0785d081.png" style={{height:"20vh"}} />
+
+- [Add automatic TypeScript setup by ijjk · Pull Request #7125 · zeit/next.js](https://github.com/zeit/next.js/pull/7125)
+- pluggable ではなく Next.js に同梱されている
+- `tsconfig.json` があれば zero-config で始められそう
+- 型チェックの `fork-ts-checker-webpack-plugin` も同梱されている
+- `@types/next` にあった型定義ファイルもすでに同梱されている
+
+<Appear>
+<b style={{fontSize:"1.5em"}}>Next.js w/TypeScript すぐ始めることができそう</b>
+</Appear>
+
+---
+## とはいえ現実…
+- monorepo 構成で TypeScript がコンパイルを担当するワークスペース
+  - Express サーバを `tsc` でコンパイル
+  - GraphQL API サーバを `tsc` でコンパイル
+- Babel に任せるよう書き換えた方が幸せかもしれない
+
+Next.js を使って monorepo するなら  
+Next.js の依存に合わせた方が幸せかも
+
+---
+<Image src="https://i.gyazo.com/cfc0a0765e54e07161f274f5446ee006.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# 2. Next.js, next.config.js<br /><small>next.confi.js だけでの運用は結構きつい</small>
+
+</Image>
+
+---
