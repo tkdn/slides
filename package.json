@@ -3,11 +3,10 @@
   "name": "tkdn-slides",
   "version": "1.0.0",
   "description": "my slides",
-  "main": "index.js",
   "repository": "git@github.com:tkdn/slides.git",
   "author": "tkdn <tkdnation@gmail.com>",
   "license": "MIT",
   "workspaces": [
-    "./*"
+    "./**/*"
   ]
 }
