@@ -8,8 +8,6 @@ export { default as theme } from '../theme'
 
 # Next.js / TypeScript でリニューアル<br />運用におけるハマりどころ
 
-au Webポータルをリニューアルして得られたもの失ったもの
-
 [2019-06-26 React Tokyo Plus @mercari](https://www.meetup.com/ja-JP/ReactJS-Tokyo/events/262199021/)
 
 @tkdn
@@ -20,7 +18,7 @@ au Webポータルをリニューアルして得られたもの失ったもの
 # Who
 ```js
   {
-    "name"  : "武田 諭",
+    "name"  : "武田 諭 / Satoshi Takeda",
     "social": "tkdn",
     "from"  : "株式会社 mediba",
     "dept"  : "CD本部創造開発部／ものづくり推進部",
@@ -30,17 +28,34 @@ au Webポータルをリニューアルして得られたもの失ったもの
 ```
 
 ---
+
+# Who
+- 1980年生まれ
+- 2003〜2013 俳優業
+- 2013〜2017 エンジニア転向、受託開発など
+- 2017〜 mediba, 入社2年目
+
+<Appear>
+  <img src="https://i.gyazo.com/c863b32e5145a8c061d66d72198fefcd.jpg" height="240" />
+  <img src="https://i.gyazo.com/e4aa5df7c24d5dc43bfb0560e97abe0d.png" height="240" />
+  <img src="https://i.gyazo.com/b196524a4ee8ee913b5e48d390fdf4e1.png" height="240" />
+</Appear>
+
+---
 ![](https://www.mediba.jp/resource/images/header/logo.png)
 
 # 株式会社 mediba
 - KDDI グループ
-  - 受託
-  - 協業
-  - 自主運営(= au Webポータル)
+  - au スマートパス
+  - au Wallet ポイントプログラム
+  - OpenDoctors
+  - ...
+  - au Webポータル :arrow_left: 今回の話
 
 <Notes>
-  協業＝レベニューシェア
-  自社サービスも展開している
+  au という名前がついているので受託のイメージが強いかもしれませんが<br />
+  協業＝レベニューシェア, 自主運営, 自社サービスも展開しています。<br />
+  今回の話は au Webポータル のリニューアルの話
 </Notes>
 
 ---
@@ -70,24 +85,24 @@ Next.js/TypeScript を中心に据えた技術スタックでリニューアル,
 ---
 # アジェンダ
 
-1. <b>リニューアルで得た成功</b>  
-あるパフォーマンス値の上昇  
-ABテスト, コンポーネント設計の例
+1. <b>リニューアルで得たもの</b>  
+:white_check_mark: <small> パフォーマンス値の上昇</small><br />
+:white_check_mark: <small>ABテスト, コンポーネント設計の例</small>
 2. <b>Next.js, next.config.js</b>  
-TypeScript との食い合わせ  
-next.config.js がきつい
-3. <b>リニューアルで得た失敗</b>  
-Perf 知見の不足による失敗  
-どうやっていくか
+:white_check_mark: <small>TypeScript との食い合わせ</small><br />
+:white_check_mark: <small>next.config.js との付き合い方</small>
+3. <b>リニューアルで得られなかったもの</b>  
+:white_check_mark: <small>Perf 知見不足による失敗</small><br />
+:white_check_mark: <small>Perf どう取り組んでいくか</small>
 
 ---
-<Image src="https://i.gyazo.com/bda91ce4236b8d6fa5284cf72ca97179.png" style={{
+<Image src="https://i.gyazo.com/e371d683352e9c104463633aa3609b88.png" style={{
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
 }}>
 
-# 1. リニューアルで得た成功<br /><small>パフォーマンス値の向上</small>
+# 1. リニューアルで得たもの<br /><small>パフォーマンス値の向上</small>
 
 </Image>
 ---
@@ -98,8 +113,8 @@ Perf 知見の不足による失敗
 TTFB / FirstPaint 上昇
 
 <Notes>
-  2年前より社内の perf 啓蒙活動により webpagetest で 12 times/1 day で計測
-  TTFB = サーバからのレスポンス1バイトを受け取ったタイミング
+  3年くらい前より社内の perf 啓蒙活動により webpagetest で 12 times/1 day で計測<br />
+  TTFB = サーバからのレスポンス1バイトを受け取ったタイミング<br />
   FirstPaint = 描画が始まるタイミング
 </Notes>
 
@@ -112,11 +127,7 @@ TTFB / FirstPaint 上昇
 <small>※ 今後は DataDog の custom metrics でプロット・ビジュアライズ一括にしちゃおうと思ってる</small>
 
 <Notes>
-  gas-webpagetest については clasp(gas 用インテグレーションツール), TypeScript ベース
-
-  3年くらい前から社内の perf 啓蒙活動により webpagetest で 12 times/1 day で計測
-  TTFB = サーバからのレスポンス1バイトを受け取ったタイミング
-  FirstPaint = 描画が始まるタイミング
+  gas-webpagetest については clasp(gas 用インテグレーションツール), TypeScript ベース<br />
 </Notes>
 
 
@@ -133,22 +144,21 @@ Akamai CDN
 - コストも見積もりやすい
 
 <Notes>
-  ## なぜ Fastly, CloudFront じゃない？
-  ### SLA 99.xxx% という基準値
-  - 満たせる CDN が Akamai だけだった
-
-  Android 4.x.x
-  iOS legacy
-  Android 2.x.x
-  AFP
-  その他の OS, ブラウザ => PC
-  緊急時は災害情報の掲示やキャリア向け災害用伝言板リンクの掲載
-  東京有事の際の大阪リージョンの緊急時画面
+  なぜ Fastly, CloudFront じゃない？<br />
+  SLA 99.xxx% という基準値<br />
+  満たせる CDN が Akamai だけだった<br />
+  - Android 4.x.x<br />
+  - iOS legacy<br />
+  - Android 2.x.x<br />
+  - AFP<br />
+  - その他の OS, ブラウザ => PC<br />
+  - 緊急時は災害情報の掲示やキャリア向け災害用伝言板リンクの掲載<br />
+  - 東京有事の際の大阪リージョンの緊急時画面<br />
   いろいろなフォールバックが多い
 </Notes>
 
 ---
-## なぜ FMP が向上した？
+## なぜ FP,FMP が向上した？
 <img src="https://i.gyazo.com/c274a8d66ed621b7c1e41b38ff876c95.png" style={{height:"150px"}} />
 <img src="https://i.gyazo.com/6ab21f9b1be3bca1bcb6674647d8ebe6.png" style={{height:"150px"}} />
 
@@ -158,54 +168,56 @@ Akamai CDN
 - Akamai 画面キャッシュも合わせて画面提供の速度が UP :zap:
 
 <Notes>
-  BFF に汚れ役をかってもらっている部分も大きい
+  BFF に汚れ役をかってもらっている部分も大きい<br />
   ガタンッというレイアウトジャンクが解消
 </Notes>
 
 ---
-<Image src="https://i.gyazo.com/bda91ce4236b8d6fa5284cf72ca97179.png" style={{
+<Image src="https://i.gyazo.com/e371d683352e9c104463633aa3609b88.png" style={{
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
 }}>
 
-# 1. リニューアルで得た成功<br /><small>事業グロースに合わせて<br />変更容易性をもったコードベース</small>
+# 1. リニューアルで得たもの<br /><small>事業グロースに合わせて<br />変更容易性をもったコンポーネント例</small>
 
 </Image>
 
 <Notes>
-  - ここでの事業グロースはユーザー接地点での変更
-  - 変更容易性
-    - AB テストによる KPI へ向けた優位性の高い施策のスムーズなリリース
+  - ここでの事業グロースはユーザー接地面における変更が主
 </Notes>
 ---
-## 変更容易性をもったコードベース？
-- AB テストによる仮設検証、コンポーネントの変更容易性が重要
-- AB テスト用の機構とリリースサイクルを早める工夫が必須
+## 変更容易性って例えば？
+- AB テストによる仮設検証, とにかくすばやく検証リリース
+- UI 決定後のリリースサイクルも早める工夫が必須
 - 条件: Google Analytics を使用した<br />URL のクエリストリング付与によるリダイレクト
 
 <Notes>
-  （Optimize によるABテストをやっているプロジェクトもあります）
-  （もちろん SSR で完結するイメージ）
+  Optimize によるABテストをやっているプロジェクトもあります
+  もちろん SSR で完結するイメージ
 </Notes>
 
 ---
 ## どうする :triumph:
 - redux state で状態注入する?
+  - :thinking_face: わざわざ `connect` したくない 
 - local state で振る舞い変える?
+  - :thinking_face: ロジックが都度漏れていく
 
 <b>Context API により上位で A/B を判定<br />
 => 下位でいつでも利用可能になる</b>
 
-<b>宣言的に, 分岐なしで書きたい</b>
+<b>分岐ロジックなしで JSX らしく宣言的に書きたい</b>
 
-<Notes>
-リリース時に単純な削除で済む
-HTML friendly なのでスキル差を考えず使える
-</Notes>
 ---
 ## こんなイメージ
 ![](https://i.gyazo.com/8b273a60db7b6fcfd0f77882ef31e871.png)
+
+<Notes>
+リリース時に単純な削除で済む<br />
+HTML friendly なのでスキル差を考えず使える<br />
+React.SFC って今は言わないですよね、Update まだできていないのがわかると思います
+</Notes>
 
 ---
 ## Context Provider
@@ -225,13 +237,19 @@ HTML friendly なのでスキル差を考えず使える
 <img src="https://i.gyazo.com/e628cc98fe4c65b963c4341ddd998ce1.png" style={{height:"55vh"}} />
 
 <Notes>
-コンシューマーは直下に Variant のみを許可して、Variant の Props によって Child コンポーネントを出し分ける
-ここにロジックを凝縮させることで開発者は分岐などを考えなくて済みます
+getInitialProps というのは Next.js が持っている特殊なメソッドです<br />
+返り値はコンポーネントの Props, Server で生成する際にコンポーネントに渡したい値の受け渡しなどに使用しますが,
+Link コンポーネントを通した routing API 利用時にもクライアントで実行されます
 </Notes>
 
 ---
 ## Context Consumer
 <img src="https://i.gyazo.com/dec789eaaab3d9b67e71156907123216.png" style={{height:"80vh"}} />
+
+<Notes>
+コンシューマーは直下に Variant のみを許可して、Variant の Props によって Child コンポーネントを出し分ける
+ここにロジックを凝縮させることで開発者は分岐などを考えなくて済みます
+</Notes>
 
 ---
 ## 再掲
@@ -239,13 +257,14 @@ HTML friendly なのでスキル差を考えず使える
 
 ---
 ## リニューアルによって
-- :+1: ABテストはじめコードの変更容易性を担保
 - :+1: TTFB, FP/FMP **"一部の"** パフォーマンスの向上
+- :+1: ABテストはじめコードの変更容易性を担保
 
 <Notes>
   施策をとにかく繰り返しリリースサイクルを早めることを意識しています
   ここで一部と強調した理由は追って話します
 </Notes>
+
 ---
 <Image src="https://i.gyazo.com/cfc0a0765e54e07161f274f5446ee006.png" style={{
   display: 'flex',
@@ -253,23 +272,13 @@ HTML friendly なのでスキル差を考えず使える
   alignItems: 'center',
 }}>
 
-# 2. Next.js, next.config.js<br /><small>TypeScript との食い合わせ</small>
+# 2. Next.js<br /><small>TypeScript との食い合わせ</small>
 
 </Image>
 
 ---
-## 本題入る前に
-- Next.js Production で使ってる人？ :raising_hand:
-
-<Appear>
-<img src="https://i.gyazo.com/236c0f86bd69f30f23fa29a0556c3dd3.png" />
-<p>ググらビリティがとっても低い Next.js</p>
-<p>リポジトリにサンプルが多いので始めやすい Next.js</p>
-</Appear>
-
----
 ## Next.js の TypeScript との食い合わせってどうなの？
-- 2018 初頭プラグインで `ts-loader`, `tsc` によるコンパイル
+- 2018 初頭プラグインで `ts-loader` によるコンパイル
 - 2018.3 プラグインで `@babel/preset-typescript` Babel によるコンパイル
   - [Compile TypeScript with Babel by herrstucki · Pull Request #162 · zeit/next-plugins](https://github.com/zeit/next-plugins/pull/162)
 
@@ -289,7 +298,7 @@ HTML friendly なのでスキル差を考えず使える
 </Appear>
 
 ---
-## とはいえ現実…
+## とはいえ今のプロジェクト
 - monorepo 構成で TypeScript がコンパイルを担当するワークスペース
   - Express サーバを `tsc` でコンパイル
   - GraphQL API サーバを `tsc` でコンパイル
@@ -305,8 +314,259 @@ Next.js の依存に合わせた方が幸せかも
   alignItems: 'center',
 }}>
 
-# 2. Next.js, next.config.js<br /><small>next.confi.js だけでの運用は結構きつい</small>
+# 2. next.config.js<br /><small>next.confi.js だけでの運用は結構きつい</small>
 
 </Image>
 
 ---
+## 実際に next.confi.js だけでの運用は結構きつい
+- server/client, 2 pass build の理解
+- webpack が出来そうなことが結構遠回り
+  - Plugin どう挟むの
+  - Plugin カスタマイズしたいのにどうすれば
+
+---
+## next.config.js
+<img src="https://i.gyazo.com/583cbddc834053102534e1bc5e68d3f8.png" style={{height:"70vh"}} />
+
+<Notes>
+  本当はもっと記述量が多い<br />
+  Next.js v6 で webpack v3 相当
+</Notes>
+
+---
+## デプロイ周りと Next.js
+- 現プロジェクトでのデプロイ
+  - :arrow_right: GitHub Enterpise
+  - :arrow_right: Travis CI Enterprise
+  - :arrow_right: CodePipeline Source Artifact
+  - :arrow_right: CodeBuild(4工程)
+  - :arrow_right: DeployAPI, DeployS3
+  - :arrow_right: DeployServer
+
+
+- デプロイする際に考慮すべきだったもの
+  - **`BUILD_ID`**
+
+---
+## `BUILD_ID` とは？
+- > `/_next/static/7Fi662KeEj0FPozITJ6xZ/pages/index.js`
+- ソースコードをシードにしたハッシュ値ではない
+- 内部的に [`nanoid`](https://www.npmjs.com/package/nanoid) を利用してランダム値生成
+
+### 何が困ったのか
+- デプロイ都合上 CodeBuild で3工程ほど並列で走っている
+- どの工程も同じ `BUILD_ID` でないと不都合
+
+---
+## どう解決したのか
+- 置換と書き換えスクリプトで `postbuild` 的な後処理 :package:
+- リポジトリで切られたタグのコミットハッシュを `BUILD_ID` として置換
+- 複数インスタンス or コンテナにデプロイする場合は要注意
+
+### 最近の Canary ブランチ
+<div style={{float:"left", marginRight: "2em"}} >
+  <img src="https://i.gyazo.com/085e63d4859efcceb3cdaec001837c4a.png" />
+</div>
+
+- `generateBuildId` という関数が用意されている
+
+<Notes>
+  next-build-id という後処理用の公開ツールもあります<br />
+  今のところ自作でプラグインを2つと後処理のスクリプトなど用意して対応。<br />
+  関係ない話、webpack v4 から厳格に ESM 仕様を踏襲したので<br />
+  export された function を stub, spy するオーバーライドができなくなった。<br />
+  しょうがないのでテスト実行時のみ webpack bootstrap code を改変, defineProperty で configurable: true ツッコむ
+</Notes>
+
+---
+<Image src="https://i.gyazo.com/dd5a8d920ce80c6f746d4f3a45400501.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# 3. リニューアルで得られなかったもの<br /><small>Perf 知見不足による失敗</small>
+
+</Image>
+---
+# au Webポータルですが<br />実は現在クライアントサイドで<br />React が動いていません
+CSR はリニューアル以前の Backbone.js, jQuery で動いています
+
+<Notes>
+SSRだけ React という贅沢な使い方
+</Notes>
+
+---
+# 理由
+- クライアントパフォーマンスの影響で事業に貢献できそうにないという判断
+- 苦渋の選択で React による CSR から以前のスタックへ
+
+---
+# 何が問題だったか
+- React.hydrate が長い
+- CPU バウンドなロングタスクが多く TTI が遅延
+- 3rd party script との共存
+
+<Notes>
+チューニングしきれなかった悔しさしかない<br />
+それによってリニューアル自身が失敗だとは思っていない
+</Notes>
+
+---
+## 3rd party script を優先せざるを得なかった
+
+- アプリケーションコードをコールバックキューに積んで遅延実行<br /> :arrow_right: 効果はある。TTI は遅延、オススメしない
+- `<link rel="preload">` で 3rd party を投機的読み込み<br /> :arrow_right: 効果大。ブラウザの実行優先度を理解するのが良いかも
+
+![](https://i.gyazo.com/6518a002763ee539f3a33017aa149fe3.png)
+
+<Notes>
+  setTimeoutやPromise/優先度の味方<br />
+  事前知識: 3rd party メインスレッドの処理ブロックを引き起こす（`document.write` など）
+</Notes>
+
+---
+## Priority on Browser(Chrome)
+
+[AddyOsmani.com - JavaScript Loading Priorities in Chrome](https://addyosmani.com/blog/script-priorities/)
+
+![](https://i.gyazo.com/d83b46957635738c7a3ea9fc2dc5e270.png)
+
+---
+## `Uncanny Valley` という現象
+[AddyOsmani.com - The Cost Of Client-side Rehydration](https://addyosmani.com/blog/rehydration/)
+<img src="https://i.gyazo.com/bb461c3777f15c0ac97b19f1b6d9062f.png" style={{height: "70vh"}} />
+
+---
+<Image src="https://i.gyazo.com/dd5a8d920ce80c6f746d4f3a45400501.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# 3. リニューアルで得られなかったもの<br /><small>Perf どう取り組んでいくか</small>
+
+</Image>
+
+---
+## Progressive Hydration
+[progressive-rendering-frameworks-samples/hydrator.js at master · GoogleChromeLabs/progressive-rendering-frameworks-samples](https://github.com/GoogleChromeLabs/progressive-rendering-frameworks-samples/blob/master/react-progressive-hydration/app/components/hydrator.js)
+
+<img src="https://i.gyazo.com/67bc819e1003c0d51e1e49cfc8c331d8.png" style={{height:"35vh"}} />
+<img src="https://i.gyazo.com/ea91b5666e229a420bc20744b616fc68.png" style={{height:"35vh"}} />
+
+SSR: 愚直にレンダー<br />
+CSR: cSU false, dangerlously... 空値 => hydrate 処理軽量<br />
+何某かのブラウザ API をフックに ReactDOM.hydrate
+
+<Notes>
+  サーバ用, クライアント用の Hydrator が存在<br />
+  SSR: 愚直にレンダー, CSR: cSU=>false, dangerlaouslySetInnterHTML 空 なので<br />
+  実質 hydrate をこれ以上行わない<br />
+  なにがしかのブラウザ API をフックにして `dynamic import` +  `ReactDOM.hydrate`
+</Notes>
+
+---
+## ConcurrentMode
+- React 16 Roadmap では ~Q2 2019 と記載
+- 当初は非同期描画モードのようなイメージ
+- 今は優先度付けし描画するモードと認識したほうがよさそう
+
+```jsx
+// Two ways to opt in:
+// 1. Part of an app (not final API)
+<React.unstable_ConcurrentMode>
+  <Something />
+</React.unstable_ConcurrentMode>
+// 2. Whole app (not final API)
+ReactDOM.unstable_createRoot(domNode).render(<App />);
+```
+
+---
+## scheduler
+[Scheduling in React | Philipp Spiess](https://philippspiess.com/scheduling-in-react/)
+
+```js
+import {
+  unstable_LowPriority,
+  unstable_runWithPriority,
+  unstable_scheduleCallback
+} from "scheduler";
+
+function sendDeferredAnalyticsNotification(value) {
+  unstable_runWithPriority(unstable_LowPriority, () => {
+    unstable_scheduleCallback(() => {
+      sendAnalyticsNotification(value);
+    });
+  });
+}
+```
+<Notes>
+  ReactDOM team のメンバーの方のブログ<br />
+  （This Week in React のパブリッシャー）<br />
+  メインスレッドでの処理を優先度を決めて実行できる<br />
+  メインスレッドの優先度 API のような標準化の流れが出てる<br />
+  https://ndkt.tumblr.com/post/183333779499/scheduling-in-react
+</Notes>
+
+---
+## React Europe
+- [Scheduling is the Future - Brandon Dail aka @aweary at @ReactEurope 2019 - YouTube](https://www.youtube.com/watch?v=Iyrf52cwxQI)
+
+<img src="https://i.gyazo.com/adc7483e37e5bc33b5f96d6dfb562170.png" style={{height:"40vh"}} />
+<img src="https://i.gyazo.com/6c5c8bdd03f8c5e5c625c189ead2bf1a.png" style={{height:"40vh"}} />
+
+- 標準化を進めるとなるとおそらく someday, future という言葉になりそう
+- [isInputPending: Facebook's first browser API contribution - Facebook Code](https://code.fb.com/developer-tools/isinputpending-api/)
+- 標準化の動きも今年始まったばかり
+
+---
+## どの方法も良さそうに見えるが… :thinking_face:
+- 無駄なコンポーネントのアップデートが走ってないか
+- CPU バウンドなロングタスクはどこにあるか
+- 泥臭いところにしかパフォーマンス改善はない
+
+**API や抜本的になにか変わることを期待してはダメ**<br />
+**小さなことからコツコツと積み重ね計測することが一番近道なはず**
+
+---
+<Invert>
+
+- サービスによるが React SSR + CDN の効果は高い
+- Next.js w/ TypeScript はじめやすくなってる
+- Production 運用は config を覚悟して
+- パフォーマンスは抜本解決より地道な作業を
+
+</Invert>
+
+<Notes>
+  ReactDOM team のメンバーの方のブログ<br />
+  （This Week in React のパブリッシャー）<br />
+  メインスレッドでの処理を優先度を決めて実行できる<br />
+  メインスレッドの優先度 API のような標準化の流れが出てる<br />
+  https://ndkt.tumblr.com/post/183333779499/scheduling-in-react
+</Notes>
+
+---
+<Invert>
+
+- [五十番 - 高畠/ラーメン](https://tabelog.com/yamagata/A0602/A060202/6001490/)
+- [麺匠 竹虎 六本木店 - 六本木/ラーメン](https://tabelog.com/tokyo/A1307/A130701/13116548/)
+- [四川担々麺荘 彩たまや （サイタマヤ） - 川口/担々麺](https://tabelog.com/saitama/A1102/A110201/11006299/)
+
+</Invert>
+
+---
+# 以上<br /><small>ありがとうございました</small>
+
+---
+# 宣伝
+## フロントエンドランチ 
+- mediba ではフロントエンドランチを毎週水曜やってます
+- Slack にてチャンネルを共有できます
+- いっしょにランチしませんかー :bento:
+- [フロントエンドランチ - mediba](https://scrapbox.io/mediba/%E3%83%95%E3%83%AD%E3%83%B3%E3%83%88%E3%82%A8%E3%83%B3%E3%83%89%E3%83%A9%E3%83%B3%E3%83%81_39)
+
+## We are hiring.
+- Wantedly, Findy... FE 募集してます
