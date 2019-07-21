@@ -1,0 +1,17 @@
+{
+  "name": "2019-07-22-mob-programming-meetup",
+  "version": "1.0.0",
+  "description": "2019-07-22 mob-programming meetup, practices and troubles",
+  "author": "tkdn <tkdnation@gmail.com>",
+  "scripts": {
+    "start": "mdx-deck deck.mdx",
+    "build": "mdx-deck build deck.mdx -d ../../$npm_package_name",
+    "pdf": "mdx-deck pdf deck.mdx",
+    "image": "mdx-deck screenshot deck.mdx",
+    "help": "mdx-deck"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "mdx-deck": "^1.8.2"
+  }
+}
