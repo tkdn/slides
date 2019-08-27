@@ -1,0 +1,157 @@
+import { Head, Image, Notes } from 'mdx-deck'
+import { Invert } from 'mdx-deck/layouts'
+export { default as theme } from '../themeDark'
+
+<Head>
+  <title>運用に耐えた怪談のような webpack plugin たち</title>
+</Head>
+
+# 運用に耐えた怪談のような<br />webpack plugin たち
+
+[2019-08-29 Build Battle Saga ~ Frontend ~](https://battle-saga-jp.connpass.com/event/142700/)
+
+@tkdn
+
+---
+![](https://s.gravatar.com/avatar/365c5067d0c90ef80e3c35d83ed811a3?s=100)
+
+# Who
+```js
+  {
+    "name"  : "武田 諭 / Satoshi Takeda",
+    "social": "tkdn",
+    "job"   : "Front-End web developer",
+    "love"  : "family, alcohol, improving DX",
+    "career": {
+      "2003-2013" : "Actor",
+      "2013-"     : "Developer"
+    }
+  }
+```
+
+---
+![](https://i.gyazo.com/1f370b0d4da291fb6bba783d1afd2be4.png)
+
+スニッカーズの CM
+
+---
+![](https://i.gyazo.com/5609e998117d1ce32f1d8245bfe6a8dc.png)
+
+スニッカーズの CM
+
+---
+## 今日話すこと
+
+自責の念にかられながら作った  
+禁忌の webpack plugin を紹介します。
+
+積極的な使用はおすすめしません。
+
+---
+# アジェンダ
+
+1. :skull: **Es3ifyPlugin**
+    - ES3 相当にコンパイル… 
+1. :skull: **DefinePropertyPatchPlugin**
+    - 2011年くらいの V8 バグのためにパッチ…
+1. :skull: **AllowMutateEsmExportsPlugin**
+    - ES Modules の仕様を裏切る…
+
+---
+<Image src="https://i.gyazo.com/753094d16844abffeddfcdb170a05a39.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+}}>
+
+# Es3ifyPlugin<br /><small>ES3 相当にコンパイル…</small>
+
+</Image>
+---
+## このご時世に ES3 という
+- 予約語をプロパティに宣言すると死 
+  - `foo.default`
+- 配列, オブジェクトで末尾カンマすると死
+  - `["foo", "bar",]`
+
+---
+## まあまあある
+
+- [es3ify-loader](https://github.com/sorrycc/es3ify-loader)
+- [es3ify-webpack-plugin](https://github.com/BryceHQ/es3ify-webpack-plugin)
+
+が、webpack に追従してなかったりしてる。
+---
+## なので、作って運用
+```js
+const es3ify = require("es3-safe-recast").compile;
+const ConcatSource = require("webpack-sources/lib/ConcatSource");
+
+module.exports = class Es3ifyPlugin {
+  apply(compiler) {
+    compiler.hooks.emit.tap("Es3ifyPlugin", compilation => {
+      Object.keys(compilation.assets)
+        .filter(file => /\.js$/.test(file))
+        .forEach(file => {
+          const asset = compilation.assets[file];
+          compilation.assets[file] =
+            new ConcatSource(es3ify(asset.source(), {
+                trailingComma: true,
+            }));
+        });
+      }
+    );
+  }
+}
+```
+
+---
+<Image src="https://i.gyazo.com/ec26d8454a05e1bb58e977bea2df5b29.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# DefinePropertyPatchPlugin<br /><small>2011年くらいの V8 バグのためにパッチ…</small>
+
+</Image>
+
+---
+## 2011 年 V8 のバグ
+- Android 4.0.x の端末に存在
+  - もちろん改修・アップデートはされていない
+  - `Object.defineProperty` を使って `prototype` を定義
+  - するとプロパティが immutable になり操作不能
+
+---
+<img src="https://i.gyazo.com/632928a90592b7cb31f9dadcbb4091a9.png" width="960" />
+
+[1530 - Defining function's 'prototype' property with Object.defineProperty sets different value and makes property immutable - v8 - Monorail](https://bugs.chromium.org/p/v8/issues/detail?id=1530)
+
+---
+## パッチがあった
+<img src="https://i.gyazo.com/18d177700c25e822aa93858e94e64b62.png" width="860" />
+
+---
+## 作ろう
+```js
+const ConcatSource = require("webpack-sources/lib/ConcatSource");
+const patch = `パッチの内容`;
+module.exports = class DefinePropertyPatchPlugin {
+  apply(compiler) {
+    compiler.hooks.afterCompile.tap("DefinePropertyPatchPlugin", compilation => {
+      Object.keys(compilation.assets)
+        .filter(file => /\.js$/.test(file))
+        .forEach(file => {
+            const asset = compilation.assets[file];
+            compilation.assets[file] = 
+                new ConcatSource(patch + asset.source());
+        });
+    });
+  }
+}
+```
+
+---
+## 注意
+雑に作ったのでパッチ部分が minify されない
