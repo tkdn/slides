@@ -18,11 +18,10 @@ export { default as theme } from '../themeDark'
 # Who
 ```js
   {
-    "name"  : "武田 諭 / Satoshi Takeda",
+    "name"  : "Satoshi Takeda / 武田 諭",
     "social": "tkdn",
     "job"   : "Front-End web developer",
-    "love"  : "family, alcohol, improving DX",
-    "career": {
+    "history": {
       "2003-2013" : "Actor",
       "2013-"     : "Developer"
     }
@@ -30,32 +29,29 @@ export { default as theme } from '../themeDark'
 ```
 
 ---
-![](https://i.gyazo.com/1f370b0d4da291fb6bba783d1afd2be4.png)
-
-スニッカーズの CM
-
----
-![](https://i.gyazo.com/5609e998117d1ce32f1d8245bfe6a8dc.png)
-
-スニッカーズの CM
-
----
-## 今日話すこと
-
 自責の念にかられながら作った  
-禁忌の webpack plugin を紹介します。
+禁忌の webpack plugin たち。
 
+今日は自責を供養しに来ました。  
 積極的な使用はおすすめしません。
 
 ---
-# アジェンダ
+<Image src="https://i.gyazo.com/7c1cdea6039f7c6e23c5ca1e05bf1612.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+}}>
 
+# 怪談 plugin<br />三銃士を連れて来たよ
+
+</Image>
+---
 1. :skull: **Es3ifyPlugin**
     - ES3 相当にコンパイル… 
 1. :skull: **DefinePropertyPatchPlugin**
     - 2011年くらいの V8 バグのためにパッチ…
 1. :skull: **AllowMutateEsmExportsPlugin**
-    - ES Modules の仕様を裏切る…
+    - ES modules の仕様を裏切る…
 
 ---
 <Image src="https://i.gyazo.com/753094d16844abffeddfcdb170a05a39.png" style={{
@@ -82,7 +78,7 @@ export { default as theme } from '../themeDark'
 
 が、webpack に追従してなかったりしてる。
 ---
-## なので、作って運用
+## 作って運用に耐えるようにした
 ```js
 const es3ify = require("es3-safe-recast").compile;
 const ConcatSource = require("webpack-sources/lib/ConcatSource");
@@ -106,6 +102,18 @@ module.exports = class Es3ifyPlugin {
 ```
 
 ---
+## 実は要らなさそう
+無駄骨に終わった :innocent:
+
+```js
+new TerserPlugin({
+  terserOptions: {
+    ie8: true,
+  },
+}),
+```
+
+---
 <Image src="https://i.gyazo.com/ec26d8454a05e1bb58e977bea2df5b29.png" style={{
   display: 'flex',
   justifyContent: 'center',
@@ -117,11 +125,17 @@ module.exports = class Es3ifyPlugin {
 </Image>
 
 ---
-## 2011 年 V8 のバグ
+## webpack バンドル後、不穏なエラー
+```
+Uncaught TypeError: Cannot assign to read only property '__esModule' of #<Object>
+```
+
+---
+## 調べると 2011 年 V8 のバグ
 - Android 4.0.x の端末に存在
   - もちろん改修・アップデートはされていない
-  - `Object.defineProperty` を使って `prototype` を定義
-  - するとプロパティが immutable になり操作不能
+  - `Object.defineProperty` が壊れてる
+  - プロパティが immutable になり値を書き換えできない
 
 ---
 <img src="https://i.gyazo.com/632928a90592b7cb31f9dadcbb4091a9.png" width="960" />
@@ -129,24 +143,43 @@ module.exports = class Es3ifyPlugin {
 [1530 - Defining function's 'prototype' property with Object.defineProperty sets different value and makes property immutable - v8 - Monorail](https://bugs.chromium.org/p/v8/issues/detail?id=1530)
 
 ---
+webpack が ES modules を  
+エミュレートするところで  
+このバグを踏んでいるっぽい。
+
+```js
+// webpack bootstrap
+Object.defineProperty(exports, '__esModule', { value: true });
+
+// ...なんやかんや
+// some modules
+exports.__esModule = true; // バグ踏む
+```
+
+---
 ## パッチがあった
 <img src="https://i.gyazo.com/18d177700c25e822aa93858e94e64b62.png" width="860" />
 
+[Cannot assign to read only property '__esModule' on Android 4.0 · Issue #2602 · facebook/create-react-app](https://github.com/facebook/create-react-app/issues/2602)
+
 ---
-## 作ろう
+## そうだ、プラグイン作ろう
 ```js
 const ConcatSource = require("webpack-sources/lib/ConcatSource");
+// バンドルしたファイルの冒頭にパッチをくっつけるだけ
 const patch = `パッチの内容`;
 module.exports = class DefinePropertyPatchPlugin {
   apply(compiler) {
-    compiler.hooks.afterCompile.tap("DefinePropertyPatchPlugin", compilation => {
-      Object.keys(compilation.assets)
-        .filter(file => /\.js$/.test(file))
-        .forEach(file => {
-            const asset = compilation.assets[file];
-            compilation.assets[file] = 
-                new ConcatSource(patch + asset.source());
-        });
+    compiler.hooks.afterCompile.tap(
+      "DefinePropertyPatchPlugin",
+      compilation => {
+        Object.keys(compilation.assets)
+          .filter(file => /\.js$/.test(file))
+          .forEach(file => {
+              const asset = compilation.assets[file];
+              compilation.assets[file] = 
+                  new ConcatSource(patch + asset.source());
+          });
     });
   }
 }
@@ -154,4 +187,94 @@ module.exports = class DefinePropertyPatchPlugin {
 
 ---
 ## 注意
-雑に作ったのでパッチ部分が minify されない
+雑に作ったのでくっつけた  
+パッチ部分が minify されない
+
+---
+<Image src="https://i.gyazo.com/18b16f1c9b1de585357975ec26cb9ab3.png" style={{
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}}>
+
+# AllowMutateEsmExportsPlugin<br /><small>ES modules の仕様を裏切る…</small>
+
+</Image>
+
+---
+1年前... webpack 2 -> 4 への移行時...
+
+アップデートしたらテストが壊れた。
+
+---
+テストというか、テストダブルの箇所。
+
+```js
+// mod.js
+export function test() {
+  return "fail";
+}
+
+// entry.js
+import sinon from "sinon";
+import * as mod from "./mod";
+
+sinon.stub(mod, "test").returns("pass"); // ⬅
+// `TypeError: Attempted to wrap undefined property as function`
+```
+
+---
+
+## そもそも ES modules って
+![](https://i.gyazo.com/221089d4fd549469290408e58e0d8543.png)
+
+仕様として exported module は read-only.  
+webpack が ES modules の仕様に厳格に。  
+export されたモジュールは書き換えできなくなった :thinking_face:
+
+---
+
+## webpack bootstrap コード
+```js
+// ここを
+Object.defineProperty(exports, name, {
+  enumerable: true,
+  get: getter
+});
+// こうしたい
+Object.defineProperty(exports, name, {
+  enumerable: true,
+  configurable: true,
+  get: getter
+});
+```
+
+---
+テストを回すバンドルの時だけ  
+無理やり書き換え。
+```js
+module.exports = class AllowMutateEsmExportsPlugin {
+  apply(compiler) {
+    compiler.hooks.compilation.tap(
+      "AllowMutateEsmExportsPlugin",
+      compilation => {
+      compilation.mainTemplate.hooks.requireExtensions.tap(
+        "AllowMutateEsmExportsPlugin",
+        source =>
+        // 1つ前のスライド参照
+        source.replace("ここを", "こうしたい")
+      )
+    });
+  }
+}
+```
+
+---
+## わかったこと: jest 使おう
+
+---
+<Invert>
+
+# 以上です。<br />sample: [tkdn/battle-saga-frontend-lt](https://github.com/tkdn/battle-saga-frontend-lt)
+
+</Invert>

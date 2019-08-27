@@ -26,7 +26,7 @@ export default {
         maxWidth: '80%'
     },
     a: {
-        color: "#5749f7"
+        color: "#a29aff"
     },
     li: {
         lineHeight: 1.6
