@@ -1,0 +1,398 @@
+import { Head, Image, Notes } from 'mdx-deck'
+import { Invert } from 'mdx-deck/layouts'
+export { default as theme } from '../theme'
+
+<Head>
+  <title>React SSR, 定期計測とプロダクトに最適なパフォーマンスアプローチ</title>
+</Head>
+
+# React SSR<br />定期計測とプロダクトに最適な<br />パフォーマンスアプローチ
+
+[2019-10-29 Nihonbashi.js #6](https://nihonbashi-js.connpass.com/event/143549/)
+
+@tkdn
+
+---
+# React SSR<br />定期計測とプロダクトに~~最適な~~<br />_最適だと思ってしまった_<br />パフォーマンスアプローチ
+
+[2019-10-29 Nihonbashi.js #6](https://nihonbashi-js.connpass.com/event/143549/)
+
+@tkdn
+
+---
+![](https://s.gravatar.com/avatar/365c5067d0c90ef80e3c35d83ed811a3?s=100)
+
+## Who
+```js
+  {
+    "name"  : "武田 諭 / Satoshi Takeda",
+    "from"  : "株式会社 mediba",
+    "job"   : "Front-End web developer / Architect",
+    "social": "tkdn",
+    "career": {
+      "2003-2013" : "Actor",
+      "2013-"     : "Developer"
+    }
+  }
+```
+
+---
+<img src="https://i.gyazo.com/7fd1fcf705ad1f28073cb95cc75361ba.png" width="600" />
+
+昔おはスタに出てたので<br />Wikipedia になぜか記載がある。<br /><small>※ そして名前の漢字が間違っている</small>
+
+出典: [おはスタ - Wikipedia](https://ja.wikipedia.org/wiki/%E3%81%8A%E3%81%AF%E3%82%B9%E3%82%BF)
+
+---
+## 今日話すこと
+- :package: プロダクト特性
+- :zap: なぜパフォーマンス改善を行うか
+- :chart_with_upwards_trend: どう計測していくか
+- :bulb: 改善ポイントの追求とどう改善したか
+- :sparkles: 検証し結果どうだったか
+
+---
+## TL;DR
+
+- <b>サードパーティスクリプトを多く抱える<br />メディア系サイトでのクライアントサイド React 辛い</b>
+- <b>perf up アプローチに失敗したが技術的には学びがあった</b>
+
+という内容を供養しにきました。<br /><small>テキスト多めですが JS な話題も盛り込みます</small>
+
+---
+<Invert>
+
+## :package: プロダクト特性
+
+</Invert>
+---
+- 某キャリアユーザ向けポータルサイト
+- ユーザ層: キャリアユーザ<br />そこまでリテラシーは高くない
+- 収益が広告収入によるもの
+
+---
+## プロダクトで採用している技術
+- 参考
+  - [mediba におけるフロントエンドの取り組み](https://tkdn.github.io/slides/2019-04-17-frontend-learn-and-delegation/#0)
+  - [Next.js / TypeScript でリニューアル・運用におけるハマりどころ](https://tkdn.github.io/slides/2019-06-26-nextjs-and-typescript/#0)
+
+
+- かいつまんで
+  - ServerSide: Next.js(React SSR)
+  - ClientSide: jQuery, Backbone.js
+
+歪な状態 :thinking_face:
+
+---
+<Invert>
+
+# :zap: なぜパフォーマンス改善を行うか
+
+</Invert>
+---
+## クライアントで<br />React が動いていない経緯
+- 収益の問題
+  - React と広告のサードパーティスクリプトの棲み分けが難しい
+
+
+- そのままでもいいのでは？
+  - 歪を解消しないと技術的負債を抱えたままになる
+  - プロダクトの技術的戦略が弱くなる<br /><small>※ 組織の採用戦略としても weak point になりうる</small>
+
+---
+<Invert>
+
+# :chart_with_upwards_trend: どう計測していくか
+
+</Invert>
+
+---
+## 定期計測の方法
+
+![](https://i.gyazo.com/3d5df9910ec4b1727e6d664b405315d4.png)
+
+参考: [Datadog と Lighthouse を利用した WebPerf の継続的計測](https://ceblog.mediba.jp/post/186341145447/webperf-measuring-with-lighthouse-and-datadog)
+
+---
+## 計測するメトリクス
+- **TTI**
+  - アプリケーション成立しユーザが画面操作可能になるタイミング
+
+
+- **初期表示に必要な広告のロードタイミング**
+  - よくあるサードパーティスクリプトの所作<br />スクリプトが iframe を生成しその iframe 内でさらに iframe を生成
+
+---
+## FYI: Puppeteer
+```js
+// 画面内の iframe の navigated なタイミングを取得
+page.on("framenavigated", frame => console.log)
+
+// デプロイ機構の変更による例外試験でアセットファイルに
+// 不正なステータスコードを含んでいないかチェック
+// これをローリングアップデート中に無限ループでテストする
+page.on("response", response => {
+  const url = response.url();
+  if (url.includes(`${domain}`)) {
+    statuses.push(response.status());
+  }
+});
+```
+
+いろんなイベント取れるので<br /> API ドキュメントを読んでみるといいかもしれません
+
+---
+<Invert>
+
+# :bulb: 改善ポイントの追求とどう改善したか
+
+</Invert>
+---
+## 仮説と改善への道筋立て
+- なぜ収益が落ちたのか？
+  - CTR/インプの低下 => 収益の落ち込み
+
+
+- ここから立てた仮説
+  1. アプリケーションとサードパーティスクリプトとの棲み分けを<br />うまく行えればインプ数が向上するのでは？
+  2. ユーザ操作が可能になるタイミングを早めれば<br />CTR が向上するのでは？
+
+---
+## どうパフォーマンス改善を筋道立てるか
+
+<b>アプリケーションの成立を早めて<br />サードパーティスクリプトとの棲み分けを最適化する</b>
+
+- 1: バンドルサイズの縮小
+  - 肥大したファイルのチャンク化
+  - 読み込み順の整理をする必要
+
+
+- 2: 効果がありそうな<br/> Dynamic Imports, Progressive Hydration の実施
+  - **効果ありそうな**がミソ<br /><small>イメージだけで取り入れてみても…後述</small>
+
+---
+## 施策候補を列挙し優先度をつけた
+
+<img src="https://i.gyazo.com/ab3d8601c11c6759e82a4226bb31ad6f.png" height="720" />
+
+---
+## 改善以前に…業務を優先し出来ていなかった
+- Next.js v5 -> v9
+  - これだけでも十分にバンドルサイズが圧縮
+
+---
+## Next.js
+
+<div style={{float: "left", marginRight: "2em"}}>
+<img src="https://i.gyazo.com/d6d34a98b4ed37a5e5ea11f125823c43.png" width="360" />
+</div>
+
+- バンドルサイズ最適化や TTI 向上へのアプローチに熱心
+
+
+- Google Chrome Team のコミットメント
+- [Chrome ❤️ ⚛️ (no, really) - Nicole Sullivan - React Rally 2019 - YouTube](https://www.youtube.com/watch?v=XD8UQeYm5Vk)
+
+---
+<Invert>
+
+# :bulb: バンドルサイズの縮小
+
+</Invert>
+---
+# lodash 依存のライブラリ削除
+
+![](https://i.gyazo.com/f9ea01badd56b0e7137b0dd61a989733.png)
+
+redux/reducer 部分で state のアップデートに<br />
+lodash に依存していた updeep を置き換え<br />
+9kb ダイエット（小さなことからコツコツと）
+
+
+`{...state, someState: true}`<br />object spread で十分
+
+---
+## Sentry のアップデート
+
+![](https://i.gyazo.com/fe727e649673af0345020190ced8a569.png)
+
+108kb ダイエット（けっこう大きなサイズ感）<br />
+サイズが大きいという issue : [@sentry/browser size · Issue #1552](https://github.com/getsentry/sentry-javascript/issues/1552)
+
+---
+**クライアントでは Sentry 自体を<br />別バンドルにさせてアプリコードから除外したい<br />とはいえ SSR 時には Sentry を含めたい**
+
+
+```js
+// next.config.js ≒ webpack.config.js
+// クライアントビルドでは @sentry/node
+// => 無を返すモジュールに差し替える
+if (!isServer) {
+  config.resolve.alias["@sentry/node"] =
+    path.join(__dirname, "./dummy/_sentry");
+}
+```
+
+- 無を返すモジュールを作成<br />`sentry.init(options)` されてもなにも処理しない
+- レポートする関数も[@sentry/minimal](https://www.npmjs.com/package/@sentry/minimal)で置き換える
+
+---
+
+**これらだけ対応したのではなく<br />詰められるサイズはどんどん詰めていった:fire:**
+
+---
+<Invert>
+
+# :bulb: TTI 上昇を目論んで<br />効果がありそうな施策実施
+
+</Invert>
+---
+## :zap: Dynamic Import
+
+```js
+// 書き味は Next 風味です
+const Header = dynamic(
+  () => import(/* webpackChunkName: "Header" */ "./Header"));
+const Info = dynamic(
+  () => import(/* webpackChunkName: "Info" */ "./Info"));
+const Search = dynamic(
+  () => import(/* webpackChunkName: "Search" */ "./Search"));
+const Tabs = dynamic(
+  () => import(/* webpackChunkName: "Tabs" */ "./Tabs"));
+const Panels = dynamic(
+  () => import(/* webpackChunkName: "Panels" */ "./Panels"));
+const Footer = dynamic(
+  () => import(/* webpackChunkName: "Footer" */ "./Footer"));
+```
+
+- とにかくページのコンポーネントを分割しチャンク化
+- ファイルが分割されることで処理自体も分割される（であろう）
+
+---
+## :zap: Progressive Hydration
+
+Google I/O 2019 で developit 先生の発表
+
+![](https://i.gyazo.com/6763a7b2c53ad362ed35a75fd7f347a2.png)
+
+参考URL: https://git.io/fjHSW
+
+---
+## is 何？
+1. SSR は愚直に `render`
+2. CSR で初回では不要なコンポーネントで<br /> `shouldComponentUpdate` -> `false`
+
+```jsx
+// ref を持った空 div
+<div
+    ref={el => this.root = el}
+    dangerouslySetInnerHTML={{__html: ""}}
+    suppressHydrationWarning
+/>
+```
+
+3. 必要になった時に 2 で描画した空 div に<br /> `ReactDOM.hydrate` でマウント
+
+先ほどの `ref` を持った要素に新たな仮想 DOM をマウントさせる
+
+---
+## 使ってみての注意点
+別のマウントポイントができるため…
+
+- redux を利用しているなら hydrate 時点の redux state を注入する必要がある
+- context を利用しているならコンテキストを注入する必要がある
+
+```jsx
+// rehydrate するコンポーネント
+<SomeContextProvider value={value}>
+    <Provider store={window.__REDUX_STATE__}>
+        {/** children */}
+    </Provider>
+</SomeContextProvider>
+```
+
+シンプルな構成なら大丈夫だが結構面倒くさい
+
+---
+## FIY
+React Conf で Concurrent Mode への注目が大きいが
+
+- `ReactDOM.scheduleHydration` も用意され始めています
+- [[Selective Hydration] ReactDOM.unstable_scheduleHydration(domNode) by sebmarkbage · Pull Request #17004 · facebook/react](https://github.com/facebook/react/pull/17004)
+
+hacky じゃないやり方で公式でサポートしてくれるなら嬉しいかも。
+
+---
+<Invert>
+
+# :sparkles: 検証し結果どうだったか
+
+</Invert>
+---
+## Optimize を利用した AB テストで検証
+
+- 収益効果を図るために別広告などを払い出し
+- リダイレクトの辛さ、白画面のラグ<br /> クライアントでのリダイレクトテスト
+- 提供する端末スペックによっては白画面が長い… :thinking_face:
+
+---
+## 収益上は？
+まだ分析途中ではあるものの
+
+- React 面がインプ数がいい（らしい）
+- CTR は相変わらず上がらない
+- 収益面で切り替えるメリットがそんなに多くはなさそう :imp: 
+
+---
+## パフォーマンス数値は？
+
+**バンドルサイズの縮小**
+
+- ネットワークのウォーターフォールを見る限り狙い通り
+- ただ目に見えて数値が向上したという点は<br />計測数値から得られる値から有意差が見づらい
+
+---
+## TTI 上昇を目論んだ結果…？
+
+![](https://i.gyazo.com/4d9d0e4acea41a99e22fee0cb257a5af.png)
+
+**有意差がほとんどない…！**<br /><small>※ これはあくまでこのプロダクトでの話です</small>
+
+---
+## DevTools パフォーマンスタブ
+
+|Before|After|
+|------|-----|
+|<img src="https://i.gyazo.com/46bfe3e8a0becb570de8e6d7869ba72a.png" />|<img src="https://i.gyazo.com/6935941b172466734fb36a05e1b413f0.png" />|
+
+チャンク化したからってそんなに旨味があるものでもない
+
+<small>チャンク化したスクリプトのロードと評価はバラせても<br />そのチャンクスクリプトを集約し実行するファイルは一つ</small>
+
+## この辺のアプローチ詳しい方いたら<br />懇親会で教えてほしい！
+
+---
+## 悪いことだけではなかった
+
+- パフォーマンス数値上は jQuery+Backbone.js と遜色はない
+- アプリケーションコードとしては性能は担保できたはず
+- サードパーティスクリプトと棲み分けはまだまだ出来ていない
+
+---
+<Invert>
+
+# :nerd_face: まとめ
+
+</Invert>
+
+---
+
+- バンドルサイズの圧縮
+  - 可能ならバンドルサイズバジェットを<br />リリース前から意識すること
+  - 後でどこを詰めるかというのも悪くないが<br />そもそもサイズが膨れる芽をを潰せる機構など
+
+
+- TTI の向上
+  - perf up に最適であると見聞きしたものは<br />実際に適用しないと効能がわからない
+  - 可能であれば施策ひとつひとつに<br />効果測定をしたほうがいい
+    - 複数施策をまとめて計測すると<br />どの施策が良いかわからなくなる
