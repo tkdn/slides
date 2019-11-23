@@ -1,37 +1,384 @@
 import { Head, Image, Notes } from 'mdx-deck'
-import { Invert } from 'mdx-deck/layouts'
-export { default as theme } from '../theme'
+import themeMediba from '../themeMediba'
+
+export const themes = [themeMediba]
+
+import {
+  SlideTitle,
+  Profile,
+  ProfileImage,
+  ProfileList,
+  TableAdjuster,
+  SectionTitle,
+  SizeL
+} from "../components/jsconf"
 
 <Head>
-  <title>mediba</title>
+  <title>mediba &amp; JavaScript development（mediba におけるフロントエンド, JavaScript）</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet" />
 </Head>
 
-# mediba
+<SlideTitle>
+  mediba &<br />JavaScript development
+  <span>mediba におけるフロントエンド, JavaScript</span>
+</SlideTitle>
 
-[2019-11-30, 12-01 JSConf JP](https://jsconf.jp/2019/)
-
-@tkdn
+[2019-11-30 JSConf JP](https://jsconf.jp/2019/)
 
 ---
-![](https://s.gravatar.com/avatar/365c5067d0c90ef80e3c35d83ed811a3?s=100)
 
-## Me
-```js
-  {
-    "name"  : "Satoshi Takeda",
-    "from"  : "mediba",
-    "job"   : "Front-End web developer / Architect",
-    "social": "tkdn",
-    "career": {
-      "2003-2013" : "Actor",
-      "2013-"     : "Developer"
-    }
-  }
-```
+## Satoshi Takeda
+
+<Profile>
+  <ProfileImage>
+    <img src="https://en.gravatar.com/userimage/54409562/52da9c4eb0482498905e2a0c7c502549.jpg?size=240" />
+  </ProfileImage>
+  <ProfileList>
+
+
+- :label: ものづくり推進部
+  - KAIZEN for dev process
+  - propagate KAIZEN-ed method
+- :zap: Front-End Developer, Architect
+- :name_badge: [@tkdn(s)](https://twitter.com/tkdn)
+
+
+  </ProfileList>
+</Profile>
+
+<Notes>
+
+- 開発部のセクションは事業の縦割りで存在、ものづくり推進部という開発プロセス伝播の部署に所属
+- 肩書上アーキテクトという名前にになってるが設計、実装、運用、アーキテクチャ、何でもやるマン
+
+</Notes>
+
 ---
-## Agenda
-- :package:
-- :zap:
-- :chart_with_upwards_trend:
-- :bulb:
-- :sparkles:
+
+<SectionTitle>
+
+## About mediba
+
+</SectionTitle>
+
+---
+
+## pronounced as メディーバ
+
+<Notes>
+
+- よく間違われるがメディバではなく、メディーバ
+- 発音記号あってるのか？
+
+</Notes>
+
+---
+
+<TableAdjuster colWidth={"33.3%"}>
+
+established | employees | devs
+---- | ---- | ---
+2000-12-06 | 431 | 50
+
+</TableAdjuster>
+
+> KDDI 株式会社の auスマートパスを中心としたau関連サービス運営の他、幅広い分野でサービスを展開し、ユーザーがインターネットを通じて必要な時に必要な情報にアクセスできる環境づくりのためのサービスを提供しています。
+
+<Notes>
+
+- 社員数確認できればしておく
+- 開発者数も確認できればしておく
+
+</Notes>
+
+---
+
+<SectionTitle>
+
+## Products
+
+</SectionTitle>
+
+---
+
+
+<TableAdjuster colWidth={"33.3%"} headFontSize={"0.7em"}>
+
+au SmartPass | au Web Portal | au Game
+---- | ---- | ---
+![](https://i.gyazo.com/2d44cf61d1d6fe3ba29c5b9f5ab7ea54.png  ) | ![](https://i.gyazo.com/7d1020a1f3e231650d32c0d1ace5104f.png) | ![](https://i.gyazo.com/168fe8d42bfe601513f5e39e8045c5f8.png)
+<small>for 15M au users</small> | <small>self-managed media</small> | <small>services that treat au points</small>
+
+</TableAdjuster>
+
+
+<Notes>
+
+- 扱ってるプロダクトはこれだけではない
+
+- 1500万人というユーザを抱えるサービス
+- au の冠はあっても自主運営となっているサービス
+- ユーザ資産であるポイントを扱いプラットフォームとして提供しているサービス
+
+</Notes>
+
+---
+
+
+<SectionTitle>
+
+## Responsibility
+
+</SectionTitle>
+
+---
+
+- :man-raising-hand: 1M ~ 15M "au" Users
+- :collision:  High-Load, Heavy-Traffic
+- :iphone: Various Devices (low spec ~ high spec)
+- :green_heart: Users' Assets (e.g. au WALLET point)
+
+<Notes>
+
+- ユーザ数: 示しているような責務を追っているので、扱うサービスの重要度は高い
+- よって高負荷、高トラフィックをさばく必要がある
+- ユーザ数: サーバサイド・インフラともに高負荷・高トラフィックの考慮が重要
+- 端末: Android 2系など最古のモバイル端末に向けた最適化を行う場合もある
+
+</Notes>
+
+---
+
+<SectionTitle>
+
+## Orgnization Structure
+
+</SectionTitle>
+
+---
+
+<TableAdjuster colWidth={"50%"} headNone={true}>
+
+none | none
+---- | ----
+![](https://i.gyazo.com/ed1a1492dad47d843e385ab8b0b38e56.png) | ![](https://i.gyazo.com/f1e2c89e647d0afe0b948836d3ad8d19.png)
+
+</TableAdjuster>
+
+<div style={{textAlign: "center"}}>
+
+:point_right: [refer to Qiita](https://qiita.com/mdb-hijikata/items/21a09ae804232d3d1535)
+
+</div>
+
+<Notes>
+
+- 弊社 au サービス開発部 部長 土方が書いた記事が参照云々
+- Qiita で mediba と検索
+
+</Notes>
+
+---
+
+<SectionTitle>
+
+## Front-End, JavaScript ? 
+at mediba
+
+</SectionTitle>
+
+---
+
+**2 years ago, right after I joined**
+
+<div style={{fontSize: ".75em"}}>
+
+- 2017, Front-End devs had used ES5 (almost).
+- Only 1 person for Front-End dev to each projects.
+- No JavaScript files in project repository.
+  - (...there were managed in another repository)
+- Back-End devs hadn't cared about FE's deploy.
+  - We had needed to upload files before Back-End deploy.
+
+</div>
+
+<div style={{textAlign: "right", marginTop: "1em"}}>
+
+**Issues are piled up :thinking_face:**
+
+</div>
+
+<Notes>
+
+入社後すぐの話
+
+- プロジェクトリポジトリにフロントエンドのソースファイルがなく別のリポジトリで管理されていたため、別の場所に移す必要があった
+- 各プロジェクトには 1 名のフロントエンドがつく感じ
+- Capistorano のようなデプロイツールにフロントエンドファイルの考慮はなく、事前に開発者が S3 バケットに上げておくスタイルだったので、サーバサイドのデプロイと統合したかった
+
+いろいろあったが課題は結構あったのでまずは着実にとりかかる必要があった
+
+</Notes>
+
+---
+
+## Need to Change :muscle:
+
+we are changing code-base to Front-End friendly, gradually.
+
+<Notes>
+
+すぐ抜本的に変えるのは難しいため、少しずつ変えながら、
+
+- リファクタや単体テスト、バンドラの導入
+- 通常デプロイフローへのフロントエンドビルド追加
+- React の導入
+
+など、思いのある人たちが今できることや課題の解消などを継続し
+彼らはフロントエンドの強い組織というものを志向し始めた
+
+</Notes>
+
+---
+
+<SectionTitle>
+
+## 2019.03 New "au Web Portal" :sparkles:
+
+Next.js with TypeScript, and GraphQL API
+
+</SectionTitle>
+
+<Notes>
+
+いろんな経緯などは割愛するのですが
+
+今年3月に大きなシステムリニューアルを行い、ひとつ形にすることができました。
+
+看板事業である、au Webポータルをリニューアル。Next.js をフロントサーバにし、GraphQL API を BFF 層を持つ構成
+
+</Notes>
+
+---
+
+<div style={{width: "100%", textAlign: "center", margin: "auto"}}>
+
+![](https://i.gyazo.com/e2b8294048b8a86cb2e5860069c0e8b3.png)
+
+[Speaker Deck](https://speakerdeck.com/tkdn/au-web-portal-frontend-bit-valley-inside-vol-dot-8)
+
+</div>
+
+<Notes>
+
+開発体制やサーバサイドの方たちを巻き込んで TypeScript を触る新しいフロントエンドチームを組成する試み + 技術的な刷新というかなりいろいろ込み入ったリニューアル
+
+</Notes>
+
+---
+
+### We changed code-base and dev teams :twisted_rightwards_arrows:
+
+<TableAdjuster colWidth={"50%"} headNone={true}>
+
+From | To
+---- | ----
+![](https://i.gyazo.com/32dc4a8fefa457bd5fea4d30d4912ef3.png) | ![](https://i.gyazo.com/7bc97a1ccb5f86014f19912c36ae7bca.png)
+
+</TableAdjuster>
+
+<Notes>
+
+サーバサイドの PHP フレームワーク Yii というものがシステムのベースにあったが、バッチ処理を Go で書き換え、データソースをつつく API は GraphQL へ、フロントサーバでは Next.js がリクエストをさばいて React で HTML をマークアップする
+
+TypeScript ベースなので当然メンバーのジョブチェンジが必要だった
+
+実はインフラも AWS へ移管されたり弊社では初めてコンテナで本番運用したり、かなりチャレンジングなプロジェクト
+
+</Notes>
+
+---
+
+<SectionTitle>
+
+## Next...?
+
+We'll apply Vue.js to our services.
+
+</SectionTitle>
+
+<Notes>
+
+別のチームでは Vue.js を使ってプロダクション利用を始めようとしています。
+
+</Notes>
+
+---
+
+<div style={{width: "100%", textAlign: "center", margin: "auto"}}>
+
+![](https://i.gyazo.com/5c227b29a7620825545ef4d1b0b0f207.png)
+
+
+[Speaker Deck](https://speakerdeck.com/yamam00s/yuzashu-1500mo-ren-falsesabisuninuxtwodao-ru-sitexi-sikatutakoto)
+
+</div>
+
+<Notes>
+
+Nuxt を使った別プロジェクトへの適用を進めていますが、先ほどの Next.js を使ったチームとは別のチーム。
+
+取り扱いフレームワーク・ライブラリの違いなど統一するつもりは今のところない。というのも、フロントエンドの開発者を増員している真っ只中、選択肢が広がっていること自体は問題ない認識
+
+</Notes>
+
+---
+
+<div style={{width: "100%", textAlign: "center", margin: "auto"}}>
+
+### Vue.js Community to our office.
+
+<img src="https://koho.mediba.jp/wp-content/uploads/2019/10/business_vue.png" width="50%" />
+
+<br />
+
+<img src="https://koho.mediba.jp/wp-content/uploads/2019/10/roppongi_vue-.png" width="50%" />
+
+</div>
+
+<Notes>
+
+- 現在 Vue.js のコミュニティのために会場を提供し勉強会の発表などに参加
+
+</Notes>
+
+---
+
+<SectionTitle>
+
+## Next ...?
+
+We want to make Front-End teams strong, so ...
+
+</SectionTitle>
+
+---
+
+# We're hiring!
+:point_right: [https://](https://)
+
+<Notes>
+
+- 明日も引き続きブースでの参加を行っています、アンケートお答えいただくとノベルティがもらえるようになっているようなのでぜひお立ち寄りください
+- カジュアルな面談でしたらいつでもやっています、興味ございましたらこの後直接でも明日のブースにでもお声がけください
+
+</Notes>
+
+---
+
+<SectionTitle>
+
+## Thank you.
+
+</SectionTitle>
