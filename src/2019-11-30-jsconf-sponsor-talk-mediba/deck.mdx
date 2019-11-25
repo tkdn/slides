@@ -64,12 +64,11 @@ import {
 
 ---
 
-## pronounced as メディーバ
+## pronounced as "メディーバ"
 
 <Notes>
 
 - よく間違われるがメディバではなく、メディーバ
-- 発音記号あってるのか？
 
 </Notes>
 
@@ -77,9 +76,9 @@ import {
 
 <TableAdjuster colWidth={"33.3%"}>
 
-established | employees | devs
+Established | Employees | Devs
 ---- | ---- | ---
-2000-12-06 | 431 | 50
+2000-12-06 | 449 | 59
 
 </TableAdjuster>
 
@@ -115,11 +114,11 @@ au SmartPass | au Web Portal | au Game
 
 <Notes>
 
-- 扱ってるプロダクトはこれだけではない
+- 1500万人というユーザを抱えるサービスである、au スマートパス
+- au の冠はあっても自主運営となっているサービス、au Webポータル
+- ユーザ資産であるポイントを扱いプラットフォームとして提供しているサービス、auゲーム
 
-- 1500万人というユーザを抱えるサービス
-- au の冠はあっても自主運営となっているサービス
-- ユーザ資産であるポイントを扱いプラットフォームとして提供しているサービス
+- 扱ってるプロダクトはこれだけではない、自社サービスなども開発している
 
 </Notes>
 
@@ -141,10 +140,14 @@ au SmartPass | au Web Portal | au Game
 
 <Notes>
 
-- ユーザ数: 示しているような責務を追っているので、扱うサービスの重要度は高い
-- よって高負荷、高トラフィックをさばく必要がある
-- ユーザ数: サーバサイド・インフラともに高負荷・高トラフィックの考慮が重要
-- 端末: Android 2系など最古のモバイル端末に向けた最適化を行う場合もある
+モバイルキャリアの看板を背負うプロダクトなのでそれ相応の責務がある
+
+- 100万〜1500万というユーザ数
+- 高負荷、高トラフィックをさばく必要がある
+- 端末についても Android 2系など古いモバイル端末に向けた最適化を行う場合もある（あくまでそういうケースもあるという程度）
+- ユーザの資産であるポイントなども取り扱うため非常にナイーブ
+
+こういった責務を負っているので、扱うサービスの重要度と同時に求められるサービスレベルも高いです
 
 </Notes>
 
@@ -188,6 +191,13 @@ at mediba
 
 </SectionTitle>
 
+<Notes>
+
+といった内容がざっくりとした会社の説明で
+じゃあフロントエンド、こと JavaScript はどうなんだという話
+
+</Notes>
+
 ---
 
 **2 years ago, right after I joined**
@@ -217,7 +227,9 @@ at mediba
 - 各プロジェクトには 1 名のフロントエンドがつく感じ
 - Capistorano のようなデプロイツールにフロントエンドファイルの考慮はなく、事前に開発者が S3 バケットに上げておくスタイルだったので、サーバサイドのデプロイと統合したかった
 
-いろいろあったが課題は結構あったのでまずは着実にとりかかる必要があった
+課題が結構あったのですぐとりかかる必要があった
+
+手つかずの自然みたいな感じ
 
 </Notes>
 
@@ -231,12 +243,12 @@ we are changing code-base to Front-End friendly, gradually.
 
 すぐ抜本的に変えるのは難しいため、少しずつ変えながら、
 
+- React の導入検討
 - リファクタや単体テスト、バンドラの導入
-- 通常デプロイフローへのフロントエンドビルド追加
-- React の導入
+- 通常のデプロイフローへJSファイルのビルド追加
 
 など、思いのある人たちが今できることや課題の解消などを継続し
-彼らはフロントエンドの強い組織というものを志向し始めた
+徐々にフロントエンドの強い組織というものを志向し始めている最中です
 
 </Notes>
 
@@ -272,13 +284,13 @@ Next.js with TypeScript, and GraphQL API
 
 <Notes>
 
-開発体制やサーバサイドの方たちを巻き込んで TypeScript を触る新しいフロントエンドチームを組成する試み + 技術的な刷新というかなりいろいろ込み入ったリニューアル
+TypeScript を共通言語にした新しいフロントエンドチームを組成する試み + 技術的な刷新というかなりいろいろ込み入ったリニューアル
 
 </Notes>
 
 ---
 
-### We changed code-base and dev teams :twisted_rightwards_arrows:
+### We re-sturctured code-base and dev teams :twisted_rightwards_arrows:
 
 <TableAdjuster colWidth={"50%"} headNone={true}>
 
@@ -290,11 +302,15 @@ From | To
 
 <Notes>
 
-サーバサイドの PHP フレームワーク Yii というものがシステムのベースにあったが、バッチ処理を Go で書き換え、データソースをつつく API は GraphQL へ、フロントサーバでは Next.js がリクエストをさばいて React で HTML をマークアップする
+サーバサイドの PHP フレームワーク Yii というものがシステムのベースにあったが
+バッチ処理を Go で書き換え、データソースをつつく API は GraphQL へ
+フロントサーバでは Next.js がリクエストをさばいて React で HTML をマークアップする
 
-TypeScript ベースなので当然メンバーのジョブチェンジが必要だった
+TypeScript ベースなので当然メンバーの学習から始めたので通常の運用と平行しながら
+長期的に学習体制をひいてリニューアルに臨んだ
 
-実はインフラも AWS へ移管されたり弊社では初めてコンテナで本番運用したり、かなりチャレンジングなプロジェクト
+インフラも AWS へ移管されたり弊社では初めてコンテナで本番運用したり
+プロジェクトとしてもかなりチャレンジングなプロジェクトになった
 
 </Notes>
 
@@ -304,13 +320,13 @@ TypeScript ベースなので当然メンバーのジョブチェンジが必要
 
 ## Next...?
 
-We'll apply Vue.js to our services.
+Vue.js to a important product
 
 </SectionTitle>
 
 <Notes>
 
-別のチームでは Vue.js を使ってプロダクション利用を始めようとしています。
+別のチームでは Vue.js を導入し始めています。
 
 </Notes>
 
@@ -327,9 +343,17 @@ We'll apply Vue.js to our services.
 
 <Notes>
 
-Nuxt を使った別プロジェクトへの適用を進めていますが、先ほどの Next.js を使ったチームとは別のチーム。
+Nuxt を使った別プロジェクトへの適用を進めていますが
+先ほどの Next.js を使ったチームとは別のチーム
 
-取り扱いフレームワーク・ライブラリの違いなど統一するつもりは今のところない。というのも、フロントエンドの開発者を増員している真っ只中、選択肢が広がっていること自体は問題ない認識
+このスライドは SpeakerDeck に上がっていますが
+Vue.js の勉強会等で内容が発表されています
+
+取り扱いフレームワーク・ライブラリの違いなど統一するつもりは今のところない
+というのも、フロントエンドの開発者を増員している真っ只中
+
+このチームはフロントエンドの強化真っ最中で
+以前は少なかったフロントエンド開発者も n 名
 
 </Notes>
 
@@ -337,7 +361,7 @@ Nuxt を使った別プロジェクトへの適用を進めていますが、先
 
 <div style={{width: "100%", textAlign: "center", margin: "auto"}}>
 
-### Vue.js Community to our office.
+### And provide as a venue
 
 <img src="https://koho.mediba.jp/wp-content/uploads/2019/10/business_vue.png" width="50%" />
 
@@ -349,7 +373,8 @@ Nuxt を使った別プロジェクトへの適用を進めていますが、先
 
 <Notes>
 
-- 現在 Vue.js のコミュニティのために会場を提供し勉強会の発表などに参加
+- 現在 Vue.js のコミュニティのために会場を提供し勉強会の発表などに参加している最中
+- Vue に限らず JavaScript 関連の勉強会会場として最寄りでご用命があればお声がけください
 
 </Notes>
 
@@ -359,14 +384,16 @@ Nuxt を使った別プロジェクトへの適用を進めていますが、先
 
 ## Next ...?
 
-We want to make Front-End teams strong, so ...
+Make Front-End teams strong, so...
 
 </SectionTitle>
 
 ---
 
 # We're hiring!
-:point_right: [https://](https://)
+:point_right: [Devs Job Description](https://hrmos.co/pages/mediba/jobs)
+
+![](https://i.gyazo.com/0ad519e5f74699d53e2c330a6acfd813.png)
 
 <Notes>
 
