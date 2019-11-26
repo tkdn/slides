@@ -1,20 +1,26 @@
 import { yellow } from 'mdx-deck/themes'
-import okaidia from 'react-syntax-highlighter/styles/prism/okaidia'
+import { highlight } from 'mdx-deck/themes'
 
-export default {
+// import okaidia from 'react-syntax-highlighter/styles/prism/okaidia'
+
+export default [highlight, {
     ...yellow,
     colors: {
         text: '#222',
         background: '#E2E1DC'
     },
-    prism: {
-        style: okaidia
+    // prism: {
+    //     style: okaidia
+    // },
+    text: {
+        heading: {
+            textTransform: 'none'
+        }
     },
-    Slides: {
-        padding: "0"
-    },
-    heading: {
-        textTransform: 'none'
+    styles: {
+        Slide: {
+            padding: "0"
+        },
     },
     h1: {
         fontSize: '2.5em'
@@ -33,4 +39,4 @@ export default {
         borderLeft: "8px solid #aaa",
         lineHeight: 2
     }
-}
+}]

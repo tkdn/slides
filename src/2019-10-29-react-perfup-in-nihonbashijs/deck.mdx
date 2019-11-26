@@ -1,6 +1,7 @@
-import { Head, Image, Notes } from 'mdx-deck'
-import { Invert } from 'mdx-deck/layouts'
-export { default as theme } from '../theme'
+import { Head, Image, Notes, Invert } from 'mdx-deck'
+import defaultTheme from '../theme'
+
+export const themes = defaultTheme
 
 <Head>
   <title>React SSR, 定期計測とプロダクトに最適なパフォーマンスアプローチ</title>
@@ -60,11 +61,13 @@ export { default as theme } from '../theme'
 という内容を供養しにきました。<br /><small>テキスト多めですが JS な話題も盛り込みます</small>
 
 ---
+
 <Invert>
 
 ## :package: プロダクト特性
 
 </Invert>
+
 ---
 - 某キャリアユーザ向けポータルサイト
 - ユーザ層: キャリアユーザ<br />そこまでリテラシーは高くない
@@ -72,34 +75,32 @@ export { default as theme } from '../theme'
 
 ---
 ## プロダクトで採用している技術
-- 参考
-  - [mediba におけるフロントエンドの取り組み](https://tkdn.github.io/slides/2019-04-17-frontend-learn-and-delegation/#0)
-  - [Next.js / TypeScript でリニューアル・運用におけるハマりどころ](https://tkdn.github.io/slides/2019-06-26-nextjs-and-typescript/#0)
 
-
-- かいつまんで
-  - ServerSide: Next.js(React SSR)
-  - ClientSide: jQuery, Backbone.js
+- [mediba におけるフロントエンドの取り組み](https://tkdn.github.io/slides/2019-04-17-frontend-learn-and-delegation/#0)
+- [Next.js / TypeScript でリニューアル・運用におけるハマりどころ](https://tkdn.github.io/slides/2019-06-26-nextjs-and-typescript/#0)
+- ServerSide: Next.js(React SSR)
+- ClientSide: jQuery, Backbone.js
 
 歪な状態 :thinking_face:
 
 ---
+
 <Invert>
 
 # :zap: なぜパフォーマンス改善を行うか
 
 </Invert>
+
 ---
 ## クライアントで<br />React が動いていない経緯
 - 収益の問題
   - React と広告のサードパーティスクリプトの棲み分けが難しい
-
-
 - そのままでもいいのでは？
   - 歪を解消しないと技術的負債を抱えたままになる
   - プロダクトの技術的戦略が弱くなる<br /><small>※ 組織の採用戦略としても weak point になりうる</small>
 
 ---
+
 <Invert>
 
 # :chart_with_upwards_trend: どう計測していくか
@@ -142,11 +143,13 @@ page.on("response", response => {
 いろんなイベント取れるので<br /> API ドキュメントを読んでみるといいかもしれません
 
 ---
+
 <Invert>
 
 # :bulb: 改善ポイントの追求とどう改善したか
 
 </Invert>
+
 ---
 ## 仮説と改善への道筋立て
 - なぜ収益が落ちたのか？
@@ -194,11 +197,13 @@ page.on("response", response => {
 - [Chrome ❤️ ⚛️ (no, really) - Nicole Sullivan - React Rally 2019 - YouTube](https://www.youtube.com/watch?v=XD8UQeYm5Vk)
 
 ---
+
 <Invert>
 
 # :bulb: バンドルサイズの縮小
 
 </Invert>
+
 ---
 # lodash 依存のライブラリ削除
 
@@ -241,11 +246,13 @@ if (!isServer) {
 **これらだけ対応したのではなく<br />詰められるサイズはどんどん詰めていった:fire:**
 
 ---
+
 <Invert>
 
 # :bulb: TTI 上昇を目論んで<br />効果がありそうな施策実施
 
 </Invert>
+
 ---
 ## :zap: Dynamic Import
 
@@ -323,11 +330,13 @@ React Conf で Concurrent Mode への注目が大きいが
 hacky じゃないやり方で公式でサポートしてくれるなら嬉しいかも。
 
 ---
+
 <Invert>
 
 # :sparkles: 検証し結果どうだったか
 
 </Invert>
+
 ---
 ## Optimize を利用した AB テストで検証
 
@@ -379,6 +388,7 @@ hacky じゃないやり方で公式でサポートしてくれるなら嬉し�
 - サードパーティスクリプトと棲み分けはまだまだ出来ていない
 
 ---
+
 <Invert>
 
 # :nerd_face: まとめ
