@@ -15,14 +15,16 @@ export const SlideTitle = styled.h1`
 
 export const Profile = styled.div`
     overflow: hidden;
-    img {
-        border-radius: 120px;
-    }
 `
 
 export const ProfileImage = styled.div`
     float: left;
     margin-right: 6vw;
+    text-align: center;
+    img {
+        border-radius: 15vw;
+        width: 20vw;
+    }
 `
 export const ProfileList = styled.div`
     overflow: hidden;
