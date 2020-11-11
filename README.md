@@ -8,3 +8,4 @@ date | title | event | venue | slide link
 2019-07-22 | モブを高速で改善し（若干）倦怠している話 | [モブプログラミングMeetup](https://connpass.com/event/138267/) | cybozu | [:bulb:](https://tkdn.github.io/slides/2019-07-22-mob-programming-meetup/)
 2019-08-29 | 運用に耐えた怪談のような webpack plugin たち | [Build Battle Saga ~ Frontend ~](https://connpass.com/event/138267/) | Recruit Technologies | [:bulb:](https://tkdn.github.io/slides/2019-08-29-build-battle-saga/)
 2019-10-29 | React SSR, 定期計測とプロダクトに最適なパフォーマンスアプローチ | [Nihonbashi.js #6](https://nihonbashi-js.connpass.com/event/143549/) | Recruit Technologies | [:bulb:](https://tkdn.github.io/slides/2019-10-29-react-perfup-in-nihonbashijs/)
+2020-11-12 | フロントエンド、私的リリース戦略史 | [コネヒトマルシェオンライン](https://connehito.connpass.com/event/193896/) | online | [:bulb:](https://tkdn.github.io/slides/2020-11-12-connehito-marche/)

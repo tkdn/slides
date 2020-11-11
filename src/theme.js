@@ -8,7 +8,16 @@ export default {
         background: '#E2E1DC'
     },
     prism: {
-        style: okaidia
+        style: {
+            ...okaidia,
+            "code[class*=\"language-\"]": {
+                fontSize: "0.8em"
+            },
+            "pre[class*=\"language-\"]": {
+                ...okaidia["pre[class*=\"language-\"]"],
+                lineHeight: 1.2
+            }
+        }
     },
     Slides: {
         padding: "0"
@@ -23,7 +32,8 @@ export default {
         fontSize: '2em'
     },
     img: {
-        maxWidth: '80%'
+        maxWidth: '80%',
+        verticalAlign: "middle"
     },
     blockquote: {
         fontSize: "0.7em",

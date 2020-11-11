@@ -1,0 +1,449 @@
+import { Head, Image, Notes } from 'mdx-deck'
+import { Invert } from 'mdx-deck/layouts'
+export { default as theme } from '../theme'
+
+<Head>
+  <title>フロントエンド、私的リリース戦略史</title>
+</Head>
+
+# フロントエンド<br />私的リリース戦略史
+
+[【mediba社合同勉強会】<br />コネヒトマルシェオンライン](https://connehito.connpass.com/event/193896/)
+
+@tkdn
+
+---
+![](https://s.gravatar.com/avatar/365c5067d0c90ef80e3c35d83ed811a3?s=100)
+
+## whoami
+```js
+  {
+    "name"  : "武田 諭",
+    "from"  : "株式会社 mediba",
+    "job"   : "フロントエンド開発者",
+    "social": "tkdn",
+    "career": {
+      "2003-2013" : "役者",
+      "2013-"     : "エンジニア"
+    }
+  }
+```
+
+---
+<img src="https://i.gyazo.com/c863b32e5145a8c061d66d72198fefcd.jpg" height="240" />
+<img src="https://i.gyazo.com/e4aa5df7c24d5dc43bfb0560e97abe0d.png" height="240" />
+<img src="https://i.gyazo.com/b196524a4ee8ee913b5e48d390fdf4e1.png" height="240" />
+
+---
+## [PR] 書籍紹介
+
+![](https://i.gyazo.com/1469e2d8829039851bd83a58432accd0.png)
+
+担当したのは Part 1 導入編, Part 3 応用編
+
+---
+## [PR] 書籍紹介
+### 特定技術よりも解決する課題を扱う
+
+- フロントエンドを取り囲むエコシステムを浅く広く扱ってます
+
+
+- 例えば SSG（静的サイト生成）<br /><small>※ SSG は書籍で扱ってません</small>
+    - DreamWeaver ⇢ Middleman ⇢ Next.js
+
+
+- 解決している根本課題は同じ<br />（周回毎に解決していることは微妙に違う
+
+---
+## [PR] 書籍紹介
+### 特定技術よりも解決する課題を扱う
+
+例）SSG 変遷
+
+共通する解決したい課題は<br />✅ **画面を大量生成したい**
+
+---
+## ~~[PR]書籍紹介~~ SSG 変遷：DreamWeaver
+
+- Web 制作におけるページ量産を効率化
+- Adobe デザイン・マークアップフルセット
+
+![](https://i.gyazo.com/de43a5ca5fb1a8fb4779df6933ae5036.png)
+
+✅ **手動で作るより<br />テンプレートに合わせて<br />画面を大量生成したい**
+
+---
+## SSG 変遷：Middleman, Jekyll, Hugo
+
+世は SSG 戦国時代（だった（言語も多種多様
+
+<img src="https://i.gyazo.com/cb88f4b943c133b8834e36a21768e03d.png" height="320" />
+
+✅ **手動で作るより<br />プログラマブルに<br />画面を大量生成したい**
+
+---
+## SSG 変遷：Next.js, Gatsby, Nuxt
+
+世は JavaScript 一強時代（バイアス
+
+✅ **フレームワーク（巨人）の肩の上で<br />画面を大量生成したい**
+
+フロントエンドに特化しているので<br />パフォーマンス💯、開発体験💯
+
+---
+## 本題
+
+---
+## 今日話すこと「リリースの話」
+- :bulb:「フロントエンドのリリースどうしてますか」
+- :bulb:「どういった戦略でデプロイにのぞみますか」
+
+---
+## アジェンダ
+
+1. 私的リリース史
+2. リリース史観から戦略へ応用する
+3. まとめ
+
+---
+<Invert>
+
+# 1.私的リリース史
+
+</Invert>
+
+---
+## 私的リリース史
+- A. 静的ファイルがまとまっているパターン
+- B. バックエンド FW が中心のパターン
+- C. フロントエンド特化のパターン
+
+---
+## 私的リリース史 A
+### 静的ファイルがまとまっているパターン
+
+- 200x-201x年初頭あたりの Web 制作・開発
+- Node.js を中心とした、ツールチェーン掛け合わせの爆発的増加
+- 成果物は SFTP, SCP でアップロード ![](https://i.gyazo.com/0b853a44f2088e917306e30505016a99.png) ![](https://i.gyazo.com/79f37d291a16b472952a88073441f168.png)
+
+:bomb: **選択肢とデプロイが自由すぎる**<br />
+:bomb: **マニュアル操作で不穏な匂いがする**
+
+---
+## 私的リリース史 B
+### バックエンド FW が中心のパターン
+
+- 201x年中頃の Web 開発
+- FuelPHP、Laravel、Rails、Yii などの<br />バックエンドFW
+- フロントエンドは控えめに載っかっている
+- バックエンドFWのテンプレートエンジン
+
+---
+## 私的リリース史 B
+### バックエンド FW が中心のデプロイ
+- fabric, capistrano, deployer...
+- フロントエンドのソースは別でデプロイ
+
+:bomb: **フロントエンドが通常デプロイフローと区別される**<br />
+:bomb: **画面に必要なアセットファイルの存在有無が未確定**
+
+---
+## 私的リリース史 B
+### mediba ジョイン時のあるデプロイ
+
+<img src="https://i.gyazo.com/b36ec6bdc4adf97a365126850b6cc438.png" height="560" />
+
+---
+## 私的リリース史 C
+### フロントエンド特化のパターン
+- 最近関わっている mediba のプロジェクト
+- Next.js SSR/SSG、React SPA
+
+✅ **フロントエンドに軸を置いているので<br />フロントエンド中心のメリットを享受できる**
+
+---
+## メリット１：Optimized Cache Busting
+- 中間キャッシュをパージする画面サブリソースの参照 URL 変更
+
+```html
+<link rel="stylesheet" href="https://awsesome-app.com/css/style.css?cache=1604818365">
+<script src="https://awsesome-app.com/js/app.js?cache=1604818365"></script>
+```
+
+---
+## メリット１：Optimized Cache Busting
+- 本当に大丈夫？ 雰囲気でパラメータつけてない？
+- ![](https://i.gyazo.com/b31d703d3990ae0396d2bcb06814baf5.png)
+    - e.g. Cloudfront query string forwarding
+
+---
+## メリット１：Optimized Cache Busting
+
+昨今のフロントエンド事情<br />webpack でのコンパイルでフォローが可能
+
+```js
+// webpack config...
+output: {
+    // 生成されるファイルのダイジェスト値により変わる
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'dist'),
+},
+```
+
+```html
+<link rel="stylesheet" href="https://awsesome-app.com/css/style.0cf28fbf.css">
+<script src="https://awsesome-app.com/js/app.7847e54d.js"></script>
+```
+
+---
+## メリット２：Long Term Caching
+- 変更のないファイルはクライアントに中間キャッシュを提供
+- ムダな通信を発生させずキャッシュを最大限有効活用
+
+---
+## メリット２：Long Term Caching
+### 例）Next.js リリース 1回目
+![](https://i.gyazo.com/2ba519a2abeab989080a0302f5267325.png)
+
+---
+## メリット２：Long Term Caching
+### 例）Next.js リリース 2回目
+![](https://i.gyazo.com/edc825e50e9deda9c63ae7100c375637.png)
+
+---
+## メリット３：Valid Cache
+- メリット１：最適化されたキャッシュバスト
+- メリット２：長期的キャッシュ戦略
+- ゆえにアプリバージョン毎にユニーク
+
+つまり？ 
+
+リリース前後で参照するサブリソースが全く違うので<br />ローリングアップデート中に不幸がない
+
+---
+## メリット３：Valid Cache
+![](https://i.gyazo.com/747c2a3993b60c42de836c8f3a77f982.png)
+
+---
+## メリット３：Valid Cache
+![](https://i.gyazo.com/69371c1c801d582a53c5e9f6f2cb8dff.png)
+
+---
+## メリット３：Valid Cache
+### なんでそんなに気にするの？
+- ユーザーに届いてからの体験は正直何が起こるか分からない
+
+> 実体験）<br />半年前リリースした資材になぜかまだリクエストがある…<br />
+> リプレイスしているのに前の API にリクエストがある（なんで…）
+
+---
+C パターンのリリース戦略とはつまり…
+
+## 🚸 ユーザーのためのキャッシュ戦略
+
+---
+<Invert>
+
+# 2.リリース史観から戦略へ応用する
+
+</Invert>
+
+---
+## 2. リリース史観から戦略へ応用する
+- 必ずしも C パターンだけではない<br />:bulb: **必ずしもフロントエンド特化ではない**
+- B だって全然ありえるパターン<br />:bulb: **バックエンドFW中心ということも全然ありえる**
+
+---
+## 再掲）mediba ジョイン時のあるデプロイ
+
+:punch: まずこの課題をクリアしたい
+
+<img src="https://i.gyazo.com/b36ec6bdc4adf97a365126850b6cc438.png" height="560" />
+
+---
+## 1.webpack のビルド時に manifest.json を作成
+
+```js
+{
+    "/assets/css/app.css": "/assets/css/app.640bde4c.css",
+    "/assets/css/page-a.css": "/assets/css/page-a.201ed25f.css",
+    "/assets/css/page-b.css": "/assets/css/page-b.b1b57f9f.css",
+    "/assets/js/app.js": "/assets/js/app.39540668.js",
+    "/assets/js/page-a.js": "/assets/js/page-a.9bf31e12.js",
+    "/assets/js/page-b.js": "/assets/js/page-b.7b3b2b62.js"
+}
+```
+
+---
+## 2.バックエンドで json を読み出す
+
+まあいろいろやって読む。
+
+---
+## 3. json からパス生成するビューヘルパー実装
+json ファイルキーから実パスを作成<br />パスを参照した script タグを作る例（PHP
+
+
+```js
+/**
+ * @param string $url
+ * @param array $attrs
+ * @return HtmlString
+ */
+public static function script(string $url, array $attrs = []): HtmlString
+{
+    $filepath = self::asset($url);
+    $attributes = self::attributes($attrs);
+    return new HtmlString('<script src="' . $filepath . '" ' . $attributes . '></script>');
+}
+```
+
+---
+## 4. テンプレートディレクティブ
+
+```html
+// ... なんやかんや
+@script("/assets/js/app.js")
+<!-- output: --><script src="/assets/js/app.39540668.js"></script>
+</body>
+</html>
+```
+
+---
+<small>こんなことをしなくても</small>
+
+## 昨今のバックエンドフレームワークは<br />準備が整っている
+
+---
+## 例）Laravel 5.8
+- `laravel new app`
+- ルートに `webpack.mix.js` がいる
+
+webpack の小難しいところを<br />隠蔽したラッパーパッケージ
+
+---
+## 最適化を戦略へ応用
+### 1.webpack.mix.js
+```js
+const mix = require('laravel-mix');
+mix.js('resources/js/app.js', 'public/js')
+    .sass('resources/sass/app.scss', 'public/css')
+ 	.version(); // この行だけスキャッフォルド時点では入っていない
+```
+
+---
+## 最適化を戦略へ応用
+### 2.マニフェスト作成
+ビルドコマンドはすでに用意されている
+
+```js
+{
+    "/js/app.js": "/js/app.js?id=2f472fa1cb8208a4b3f4",
+    "/css/app.css": "/css/app.css?id=99bb964c34fbf0372f70"
+}
+```
+
+---
+## 最適化を戦略へ応用
+### 3.テンプレートから利用
+mix は付属のヘルパー関数
+
+```html
+<link rel="stylesheet" href="{{ mix('css/app.css') }}" />
+<script src="{{ mix('js/app.js') }}"></script>
+```
+
+![](https://i.gyazo.com/99e01dd50642b90db3f660cc82acb560.png)
+
+---
+## 例）Rails 6.0
+- `rails new app`
+- `webpacker` がデフォルトで入っている
+
+webpack の小難しいところを<br />隠蔽したラッパーパッケージ
+
+<small>※ …と思ったが使い勝手に癖があって少し戸惑った</small>
+
+---
+## 最適化を戦略へ応用
+### 1.`app/javascript/packs/` にファイル設置
+![](https://i.gyazo.com/e2359d8e65f2dc8fafcc0ff272750c7b.png)
+
+---
+## 最適化を戦略へ応用
+### 2.マニフェスト生成
+ビルドコマンドはすでに用意されている
+
+![](https://i.gyazo.com/6cee186ddf18e810612b6f764e91b2a5.png)
+
+---
+## 最適化を戦略へ応用
+### 3.テンプレートへ記述
+
+```html
+<%= stylesheet_pack_tag 'app' %>
+<%= stylesheet_pack_tag 'styles/another' %>
+</head>
+<body>
+    <%= javascript_pack_tag 'app' %>
+    <%= javascript_pack_tag 'scripts/another' %>
+</body>
+```
+
+![](https://i.gyazo.com/7dd3e97eea839b3125430011ab5f2102.png)
+
+---
+
+実装サンプル
+
+[tkdn/release-strategy-working](https://github.com/tkdn/release-strategy-working)
+
+---
+## 2. リリース史観から戦略へ応用する
+適切なリリース戦略実現のために<br />バックエンドフレームワークとの協調で何が必要そうか？
+
+1. フロントエンドのあるべき姿を共有
+2. フロントエンドビルドパイプラインをデプロイフローへ合流させる
+3. リリース・キャッシュ戦略はチームで考える
+
+---
+<Invert>
+
+# 3.まとめ
+
+</Invert>
+
+---
+## 3.まとめ
+昨今の JS フレームワークはフロントエンドに<br />最適化されたリリース・キャッシュ戦略が込み
+
+- メリット１：Optimized Cache Busting
+- メリット２：Long Term Caching
+- メリット３：Valid Cache
+
+---
+## 3.まとめ
+最適化されたフロントエンドの戦略を<br />バックエンドフレームワークにも持ち込む場合
+
+- 昨今のフレームワークは用意がある<br />（なければ自作して）
+- 開発チームの理解を得て<br />リリースとフロントエンドビルドパイプラインを合流させよう
+
+---
+## 参考資料その1
+- [テンプレート機能を使ってみよう　パート1：「編集可能領域」と「オプション領域」の使い方 | デベロッパーセンター](https://www.adobe.com/jp/devnet/dreamweaver/articles/using_template_part1.html)
+- [Static Site Generators - Top Open Source SSGs | Jamstack](https://jamstack.org/generators/)
+
+---
+## 参考資料その2
+- [Caching | webpack](https://webpack.js.org/guides/caching/)
+- [ブラウザのキャッシュを活用する  |  PageSpeed Insights  |  Google Developers](https://developers.google.com/speed/docs/insights/LeverageBrowserCaching)
+- [Prevent unnecessary network requests with the HTTP Cache](https://web.dev/http-cache/)
+- [Caching best practices & max-age gotchas - JakeArchibald.com](https://jakearchibald.com/2016/caching-best-practices/)
+
+---
+## 参考資料その3
+- [クエリ文字列パラメータに基づくコンテンツのキャッシュ - Amazon CloudFront](https://docs.aws.amazon.com/ja_jp/AmazonCloudFront/latest/DeveloperGuide/QueryStringParameters.html)
+- [S3 バケットのライフサイクルポリシーを作成する方法 - Amazon Simple Storage Service](https://docs.aws.amazon.com/ja_jp/AmazonS3/latest/user-guide/create-lifecycle.html)
+- [medz/webpack-laravel-mix-manifest: 🐶A webpack plugin that generates Laravel framework compatible mix-manifest.josn file.](https://github.com/medz/webpack-laravel-mix-manifest)
+- [JeffreyWay/laravel-mix: The power of webpack, distilled for the rest of us.](https://github.com/JeffreyWay/laravel-mix)
+- [rails/webpacker: Use Webpack to manage app-like JavaScript modules in Rails](https://github.com/rails/webpacker)
